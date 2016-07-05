@@ -1,0 +1,27 @@
+Test suite: tests_for_cerr
+Test suite location: C:\Users\nthakur34\Documents\Matlab\CERR-master\Unit_Testing\tests_for_cerr
+16-Jun-2016 11:45:54
+
+
+tests_for_cerr
+
+   testBrainStemMeanDose
+      testBrainStemMeanDose ................................. FAILED in     0.804045 seconds
+   testBrainStemMeanDose .................................... FAILED in     0.810714 seconds
+
+
+   testLungPlanDVH
+      testLungPlanDVH ....................................... passed in     2.810935 seconds
+   testLungPlanDVH .......................................... passed in     2.811778 seconds
+
+tests_for_cerr .............................................. FAILED in     3.700343 seconds
+
+
+===== Test Case Failure =====
+Location: C:\Users\nthakur34\Documents\Matlab\CERR-master\Unit_Testing\tests_for_cerr\testBrainStemMeanDose.m
+Name:     testBrainStemMeanDose
+
+C:\Users\nthakur34\Documents\Matlab\CERR-master\Unit_Testing\tests_for_cerr\testBrainStemMeanDose.m at <a href="matlab: opentoline('C:\Users\nthakur34\Documents\Matlab\CERR-master\Unit_Testing\tests_for_cerr\testBrainStemMeanDose.m',33)">line 33</a>
+
+Undefined function 'throw' for input arguments of type 'char'.
+

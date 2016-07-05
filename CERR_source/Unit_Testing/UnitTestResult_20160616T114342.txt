@@ -1,0 +1,18 @@
+Test suite: tests_for_cerr
+Test suite location: C:\Users\nthakur34\Documents\Matlab\CERR-master\Unit_Testing\tests_for_cerr
+16-Jun-2016 11:43:42
+
+
+tests_for_cerr
+
+   testBrainStemMeanDose
+      testBrainStemMeanDose ................................. passed in     0.459434 seconds
+   testBrainStemMeanDose .................................... passed in     0.460004 seconds
+
+
+   testLungPlanDVH
+      testLungPlanDVH ....................................... passed in     2.794507 seconds
+   testLungPlanDVH .......................................... passed in     2.795004 seconds
+
+tests_for_cerr .............................................. passed in     3.367507 seconds
+

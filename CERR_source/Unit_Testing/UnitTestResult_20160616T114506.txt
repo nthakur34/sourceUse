@@ -1,0 +1,34 @@
+Test suite: tests_for_cerr
+Test suite location: C:\Users\nthakur34\Documents\Matlab\CERR-master\Unit_Testing\tests_for_cerr
+16-Jun-2016 11:45:06
+
+
+tests_for_cerr
+
+   testBrainStemMeanDose
+      testBrainStemMeanDose ................................. FAILED in     0.836715 seconds
+   testBrainStemMeanDose .................................... FAILED in     0.843392 seconds
+
+
+   testLungPlanDVH
+      testLungPlanDVH ....................................... passed in     2.809402 seconds
+   testLungPlanDVH .......................................... passed in     2.810254 seconds
+
+tests_for_cerr .............................................. FAILED in     3.731318 seconds
+
+
+===== Test Case Failure =====
+Location: C:\Users\nthakur34\Documents\Matlab\CERR-master\Unit_Testing\tests_for_cerr\testBrainStemMeanDose.m
+Name:     testBrainStemMeanDose
+
+C:\Users\nthakur34\Documents\Matlab\CERR-master\Unit_Testing\tests_for_cerr\testBrainStemMeanDose.m at <a href="matlab: opentoline('C:\Users\nthakur34\Documents\Matlab\CERR-master\Unit_Testing\tests_for_cerr\testBrainStemMeanDose.m',31)">line 31</a>
+
+1.000000e-05
+Inputs are not equal.
+
+First input:
+   14.0871
+
+Second input:
+   14.0871
+
