@@ -37,7 +37,8 @@ FFP = [ 1, 0, 0,   0, -1, 0];
 
 dcmobj = scanfile_mldcm(fileName);
 
-IOP = dcm2ml_Element(dcmobj.get(hex2dec('00200037')))';
+%%change to updates function
+IOP = getTagValue(dcmobj, '00200037')';
 
 
 if IOP == HFS

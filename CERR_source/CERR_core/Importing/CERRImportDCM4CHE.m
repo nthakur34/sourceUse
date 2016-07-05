@@ -62,7 +62,7 @@ patientNum = 1;
 [filesInCurDir,dirsInCurDir] = rdir(path);
 
 if isfield(optS,'importDICOMsubDirs') && strcmpi(optS.importDICOMsubDirs,'yes') && ~isempty(dirsInCurDir)    
-    
+    disp('inIsField');
     for i = 1:length(dirsInCurDir)
         %     patient = scandir_mldcm(fullfile(path, dirs(i).name), hWaitbar, i);
         patient = scandir_mldcm(dirsInCurDir(i).fullpath, hWaitbar, i);
@@ -83,7 +83,6 @@ else
     dirs(1).name = '';
     
     for i = 1:length(dirs)
-        disp('in SCaNDIR');
         patient = scandir_mldcm(fullfile(path, dirs(i).name), hWaitbar, i);
         if ~isempty(patient)
             for j = 1:length(patient.PATIENT)
@@ -103,7 +102,6 @@ if isempty(dcmdirS)
 end
  
 close(hWaitbar);
- disp('AFTER scandir');
 selected = showDCMInfo(dcmdirS);
 patNameC = fieldnames(dcmdirS);
 if isempty(selected)
@@ -123,7 +121,6 @@ elseif strcmpi(selected,'all')
 %             combinedDcmdirS.STUDY.SERIES(end+1) = dcmdirS.(patNameC{i}).STUDY.SERIES(j);
 %         end
 %     end
-disp('BEFORE LOOP');
 for i = 2:length(patNameC)
     for  k = 1:length(dcmdirS.(patNameC{i}).STUDY)
         for j = 1:length(dcmdirS.(patNameC{i}).STUDY(k).SERIES)

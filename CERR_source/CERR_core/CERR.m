@@ -1,3 +1,4 @@
+
 function CERR(varargin)
 %"CERR"
 %   Master function to open CERR.

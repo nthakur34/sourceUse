@@ -63,7 +63,6 @@ for i=1:length(tags)
     %CHANGED to ELEMENT DICTIONARY
     elseif  strcmpi(toString(vr), 'SQ')
        child_obj = org.dcm4che3.data.Attributes;
-       disp('good - AT createEmptyFields');
        % el = dcmobj.setNull(tags(i), vr); NOT WORKING
        dcmobj.setNull(tags(i), vr);
        el = dcmobj;
@@ -72,7 +71,7 @@ for i=1:length(tags)
        child_obj = createEmptyFields(child_obj, kids); 
        %FIX by removing
         % el.addDicomObject(child_obj);
-       % probably use this
+       % probably use this or maybe Sequence class
    
        el.addAll(child_obj);
        

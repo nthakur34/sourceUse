@@ -1,4 +1,4 @@
-function data = dcm2ml_Element(el, tag)
+function data = getTagValue(attr, tag)
 %"dcm2ml_element"
 %   Convert a Java SimpleDicomElement object into a Matlab datatype.
 %
@@ -54,17 +54,17 @@ cs = [];
 
 %Get the tag value as a char array.
 try
-    tag = char(org.dcm4che2.util.TagUtils.toString(el.tag)); %removed el.tag
+    tag = char(org.dcm4che2.util.TagUtils.toString(attr.tag)); %removed attr.tag
 catch
     data = '';
     return;
 end
 
 %Get the VR, cast to ML char array.
-vr = char(el.vr.toString);
+vr = char(attr.vr.toString);
 %}
 %modalityTag = '00080060';
-vr = char (el.getVR(hex2dec(tag)));
+vr = char (attr.getVR(hex2dec(tag)));
 
 buf = 1;
 cs = [];
@@ -77,9 +77,9 @@ switch upper(vr)
         %Needs implementation
         data = '';
     case 'AT'
-        data = dec2hex(el.getInts(buf));
+        data = dec2hex(attr.getInts(buf));
     case {'CS', 'LO', 'SH', 'ST'}
-        data = el.getStrings(cs, buf);
+        data = attr.getStrings(cs, buf);
         %If more than one string, put in cell array.
         if numel(data) > 1
             data = cell(data);
@@ -88,28 +88,28 @@ switch upper(vr)
         end
     case 'DA'
         %Date string format: YYYYMMDD
-        data = char(el.getString(cs, buf));
+        data = char(attr.getString(cs, buf));
     case 'DS'
-        data = el.getDoubles(buf);
+        data = attr.getDoubles(buf);
     case 'DT'
-        data = el.getDate(buf);
+        data = attr.getDate(buf);
         
     case 'FL'
         %Needs implementation
         %wy
-        %data =  float(el.getFloat(buf));
-        data =  el.getFloats(buf);
+        %data =  float(attr.getFloat(buf));
+        data =  attr.getFloats(buf);
         
     case 'FD'
-        data = el.getDoubles(buf);
+        data = attr.getDoubles(buf);
     case 'IS'
-        data = el.getInts(buf);
+        data = attr.getInts(buf);
     case 'LT'
-        data = char(el.getString(cs, buf));
+        data = char(attr.getString(cs, buf));
     case 'OB'
-        data = el.getBytes;
+        data = attr.getBytes;
     case 'OF'
-        data = el.getFloats(buf);        
+        data = attr.getFloats(buf);        
     case 'OW'
         %OW contains 16 bit words.  Conversion of this data into meaningful
         %values is the responsibility of the calling function.
@@ -117,10 +117,10 @@ switch upper(vr)
         %wy it should be uint16 or int16, which depends on the value in data
         %representation fields, but the data conversion b/w matlab and java is int32.
         
-        %data = uint16(el.getInts(buf));
-        data = el.getInts(buf);
+        %data = uint16(attr.getInts(buf));
+        data = attr.getInts(buf);
     case 'PN'
-        nameObj = org.dcm4che3.data.PersonName(el.getString(cs, buf));
+        nameObj = org.dcm4che3.data.PersonName(attr.getString(cs, buf));
 
         %The # in get(#) as defined by dcm4che2, PersonName class.
         data.FamilyName = char(nameObj.get(0));
@@ -130,27 +130,27 @@ switch upper(vr)
         data.NameSuffix = char(nameObj.get(4));
     case 'SL'
         % 
-         data = el.getInt(buf);
+         data = attr.getInt(buf);
     case 'SQ'
-        nElements = el.countItems;
+        nElements = attr.countItems;
         data = [];
         for i=0:nElements-1
-            data.(['Item_' num2str(i+1)]) = dcm2ml_Object(el.getDicomObject(i));
+            data.(['Item_' num2str(i+1)]) = dcm2ml_Object(attr.getDicomObject(i));
         end
     case 'SS'
         %Needs implementation
         data = '';
     case 'TM'
         %Time string format: HHMMSS.ss where "ss" is fraction of a second.
-        data = char(el.getString(cs, buf));
+        data = char(attr.getString(cs, buf));
     case 'UI'
-        data = char(el.getString(cs, buf));
+        data = char(attr.getString(cs, buf));
     case 'UL'
-        data = el.getInts(buf);
+        data = attr.getInts(buf);
     case 'UN'
-        data = el.getBytes;
+        data = attr.getBytes;
     case 'US'
-        data = el.getInt(buf);
+        data = attr.getInt(buf);
     case 'UT'
         %Needs implementation
         data = '';                 

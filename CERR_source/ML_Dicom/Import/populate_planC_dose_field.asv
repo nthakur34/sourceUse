@@ -65,14 +65,14 @@ switch fieldname
         
     case 'patientName'
         %Patient's Name
-        dataS = getTagValue(dcmobj, '00100010');
+        dataS = dcm2ml_Element(dcmobj, '00100010');
         
     case 'doseNumber'
         %Currently undefined.
         
     case 'doseType'
         %Dose Type
-        dT = getTagValue(dcmobj, '30040004');
+        dT = dcm2ml_Element(dcmobj, '30040004');
         
         switch upper(dT)
             case 'PHYSICAL'
@@ -87,17 +87,16 @@ switch fieldname
         end
         
     case 'doseSummationType'
-        dataS = getTagValue(dcmobj, '3004000A');
+        dataS = dcm2ml_Element(dcmobj, '3004000A');
     
         %% Try to handle without using "get" command to transition to dcm4che3
     case 'refBeamNumber'
-        
-        rtplanSeq = getTagValue(dcmobj, '300C0002');
+        rtplanSeq = dcmobj.get(hex2dec('300C0002'));
         if isempty(rtplanSeq)
             return;
         end
-        artpSeq = rtplanSeq.getDicomObject(0); %Sequence. change to dcm4che3
-        fractionGroupSeq = dcm2ml_Element(artpSeq, '300C0020');        
+        artpSeq = rtplanSeq.getDicomObject(0);
+        fractionGroupSeq = artpSeq.get(hex2dec('300C0020'));        
         if isempty(fractionGroupSeq)
             return;
         end
@@ -116,11 +115,6 @@ switch fieldname
             dataS = dcm2ml_Element(aBeamSeq.get(hex2dec('300C0006')));
         end
         
-        if ~dcmobj.contains(hex2dec('300C0002'))
-            return
-        end
-            
-            
     case 'refFractionGroupNumber'
         rtplanSeq = dcmobj.get(hex2dec('300C0002'));
         if isempty(rtplanSeq)

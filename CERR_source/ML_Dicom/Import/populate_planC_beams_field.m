@@ -44,82 +44,83 @@ if ~exist('dcmobj', 'var')
     dcmobj = scanfile_mldcm(RTPlan.file);
 end
 
+%% UPDATE CHANGED PARAMETERS OR FUNCTION DCM2ML_ELEMENT
 switch fieldname
     case 'PatientName'
         %Patient's Name
-        dataS = dcm2ml_Element(dcmobj.get(hex2dec('00100010')));
+        dataS = getTagValue(dcmobj, '00100010');
     case 'PatientID'
         % Patient Identification
-        dataS = dcm2ml_Element(dcmobj.get(hex2dec('00100020')));
+        dataS = getTagValue(dcmobj, '00100020');
     case 'PatientBirthDate'
         %Patient Date of Birth
-        dataS = dcm2ml_Element(dcmobj.get(hex2dec('00100030')));
+        dataS = getTagValue(dcmobj, '00100030');
     case 'PatientSex'
         %Patient Sex
-        dataS = dcm2ml_Element(dcmobj.get(hex2dec('00100040')));
+        dataS = getTagValue(dcmobj, '00100040');
     case 'AcquisitionGroupLength'
         
     case 'RelationshipGroupLength'
     case 'ImagePresentationGroupLength'
     case 'PixelPaddingValue'
         %Patient Sex
-        dataS = dcm2ml_Element(dcmobj.get(hex2dec('00280120')));
+        dataS = getTagValue(dcmobj, '00280120');
         
     case 'PlanGroupLength'
         
     case 'RTPlanLabel'
         %RT Plan Label
-        dataS = dcm2ml_Element(dcmobj.get(hex2dec('300A0002')));
+        dataS = getTagValue(dcmobj, '300A0002');
     case 'RTPlanDate'
         %RT Plan Date
-        dataS = dcm2ml_Element(dcmobj.get(hex2dec('300A0006')));
+        dataS = getTagValue(dcmobj, '300A0006');
     case 'RTPlanTime'
         %RT Plan Time
-        dataS = dcm2ml_Element(dcmobj.get(hex2dec('300A0007')));
+        dataS = getTagValue(dcmobj, '300A0007');
     case 'RTPlanGeometry'
         %RT Plan Geometry
-        dataS = dcm2ml_Element(dcmobj.get(hex2dec('300A000C')));
+        dataS = getTagValue(dcmobj, '300A000C');
     case 'TreatmentSites'
         %Treatment Site
-        dataS = dcm2ml_Element(dcmobj.get(hex2dec('300A000B')));
+        dataS = getTagValue(dcmobj, '300A000B');
     case 'PrescriptionDescription'
         %Prescription Description
-        dataS = dcm2ml_Element(dcmobj.get(hex2dec('300A000E')));
+        dataS = getTagValue(dcmobj, '300A000E');
     case 'DoseReferenceSequence'
         %Dose Reference Sequence (Has multiple sequences)
-        dataS = dcm2ml_Element(dcmobj.get(hex2dec('300A0010')));
+        dataS = getTagValue(dcmobj, '300A0010');
     case 'FractionGroupSequence'
         %Fraction Group Sequence
-        dataS = dcm2ml_Element(dcmobj.get(hex2dec('300A0070')));
+        dataS = getTagValue(dcmobj, '300A0070');
     case 'BeamSequence'
         %Beam Sequence
-        dataS = dcm2ml_Element(dcmobj.get(hex2dec('300A00B0')));
+        dataS = getTagValue(dcmobj, '300A00B0');
     case 'PatientSetupSequence'
         %Patient Setup Sequence
-        dataS = dcm2ml_Element(dcmobj.get(hex2dec('300A0180')));
+        dataS = getTagValue(dcmobj, '300A0180');
     case 'ReferencedRTGroupLength'
     case 'ReferencedStructureSetSequence'
         %Referenced Structure Set Sequence
-        dataS = dcm2ml_Element(dcmobj.get(hex2dec('300C0060')));
+        dataS = getTagValue(dcmobj, '300C0060');
     case 'ReferencedDoseSequence'
         %Referenced Dose Sequence
-        dataS = dcm2ml_Element(dcmobj.get(hex2dec('300C0080')));
+        dataS = getTagValue(dcmobj, '300C0080');
     case 'ReviewGroupLength'
     case 'ApprovalStatus'
         %Referenced Dose Sequence
-        dataS = dcm2ml_Element(dcmobj.get(hex2dec('300E0002')));
+        dataS = getTagValue(dcmobj, '300E0002');
     case 'ReviewDate'
         %Review Date
-        dataS = dcm2ml_Element(dcmobj.get(hex2dec('300E0004')));
+        dataS = getTagValue(dcmobj, '300E0004');
     case 'ReviewTime'
         %Review Time
-        dataS = dcm2ml_Element(dcmobj.get(hex2dec('300E0005')));
+        dataS = getTagValue(dcmobj, '300E0005');
     case 'ReviewerName'
         %Reviewer Name
-        dataS = dcm2ml_Element(dcmobj.get(hex2dec('300E0008')));
+        dataS = getTagValue(dcmobj, '300E0008');
     case 'SOPInstanceUID'
         % SOP Instance UID: used to link RTPlan to respective dose file
-        dataS = dcm2ml_Element(dcmobj.get(hex2dec('00080018')));
+        dataS = getTagValue(dcmobj, '00080018');
     case 'BeamUID'
         dataS = createUID('beams');
 end
