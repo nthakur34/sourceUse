@@ -35,7 +35,7 @@ function dataS = populate_planC_field(cellName, dcmdir_patient)
 
 %Get template for the requested cell.
 persistent rtPlans
-
+disp('Reading form field');
 structS = initializeCERR(cellName);
 names   = fields(structS);
 
@@ -50,16 +50,16 @@ switch cellName
         
     case 'scan'
         % supportedModalities = {'CT'};
-        
+        disp('Reading form field in scan case');
         scansAdded = 0;
         
         %Extract all series contained in this patient.
         [seriesC, typeC] = extract_all_series(dcmdir_patient);
-        
         %ctSeries = length(find(seriesC(strcmpi(typeC, 'CT'))==1));
         
         %Place each series (CT, MR, etc.) into its own array element.
         for seriesNum = 1:length(seriesC)
+             disp('Reading form field in scan case in FORLOOP');
             %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
             %%%%%%%%%%Commented By Divya adding support for US %%%%%%%%%%%%%%%%%%%%%%%%
             %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -80,7 +80,7 @@ switch cellName
             % % %             outIOP = getTest_Scan_IOP(seriesC{seriesNum}.Data(1).file);
             
             if ismember(typeC{seriesNum},{'CT','OT','NM','MR','PT','ST','MG'})
-                
+                 disp('GOT HERE');
                 %Populate each field in the scan structure.
                 for i = 1:length(names)
                     dataS(scansAdded+1).(names{i}) = populate_planC_scan_field(names{i}, seriesC{seriesNum}, typeC{seriesNum}, seriesNum);
@@ -102,6 +102,7 @@ switch cellName
                         end
                     end
                 elseif ~strcmpi(typeC{seriesNum}, 'PT')
+                    disp('GOT HERE2');
                     if abs(dataS(scansAdded+1).scanInfo(1).rescaleSlope - 1) > eps*1e5
                         dataS(scansAdded+1).scanArray = single(int32(dataS(scansAdded+1).scanArray) * dataS(scansAdded+1).scanInfo(1).rescaleSlope + dataS(scansAdded+1).scanInfo(1).rescaleIntercept);
                     else
@@ -116,6 +117,7 @@ switch cellName
                 scansAdded = scansAdded + 1;
                 
             elseif strcmpi(typeC{seriesNum}, 'US')
+                disp('GOT HERE3');
                 %Populate each field in the scan structure.
                 for i = 1:length(names)
                     dataS(scansAdded+1).(names{i}) = populate_planC_USscan_field(names{i}, seriesC{seriesNum}, typeC{seriesNum});
@@ -142,7 +144,7 @@ switch cellName
         
         %Place each structure into its own array element.
         for seriesNum = 1:length(seriesC)
-            
+            disp('GOT HERE IN case structure');
             %if ismember(typeC{seriesNum}, supportedTypes)
             if strcmpi(typeC{seriesNum}, 'RTSTRUCT')
                 
@@ -195,7 +197,7 @@ switch cellName
         frameOfRefUIDC       = {};
         %Place each RTDOSE into its own array element.
         for seriesNum = 1:length(seriesC)
-            
+            disp('GOT HERE in case Dose');
             %             if ismember(typeC{seriesNum}, supportedTypes)
             if strcmpi(typeC{seriesNum}, 'RTDOSE')                
                 

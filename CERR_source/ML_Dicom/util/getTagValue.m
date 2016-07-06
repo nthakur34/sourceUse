@@ -65,7 +65,6 @@ vr = char(attr.vr.toString);
 %}
 %modalityTag = '00080060';
 vr = char (attr.getVR(hex2dec(tag)));
-
 buf = 1;
 cs = [];
 
@@ -77,9 +76,9 @@ switch upper(vr)
         %Needs implementation
         data = '';
     case 'AT'
-        data = dec2hex(attr.getInts(buf));
+        data = dec2hex(attr.getInts(hex2dec(tag)));
     case {'CS', 'LO', 'SH', 'ST'}
-        data = attr.getStrings(cs, buf);
+        data = attr.getStrings(hex2dec(tag));
         %If more than one string, put in cell array.
         if numel(data) > 1
             data = cell(data);
@@ -88,28 +87,28 @@ switch upper(vr)
         end
     case 'DA'
         %Date string format: YYYYMMDD
-        data = char(attr.getString(cs, buf));
+        data = char(attr.getString(hex2dec(tag)));
     case 'DS'
-        data = attr.getDoubles(buf);
+        data = attr.getDoubles(hex2dec(tag));
     case 'DT'
-        data = attr.getDate(buf);
+        data = attr.getDate(hex2dec(tag));
         
     case 'FL'
         %Needs implementation
         %wy
         %data =  float(attr.getFloat(buf));
-        data =  attr.getFloats(buf);
+        data =  attr.getFloats(hex2dec(tag));
         
     case 'FD'
-        data = attr.getDoubles(buf);
+        data = attr.getDoubles(hex2dec(tag));
     case 'IS'
-        data = attr.getInts(buf);
+        data = attr.getInts(hex2dec(tag));
     case 'LT'
         data = char(attr.getString(cs, buf));
     case 'OB'
         data = attr.getBytes;
     case 'OF'
-        data = attr.getFloats(buf);        
+        data = attr.getFloats(hex2dec(tag));        
     case 'OW'
         %OW contains 16 bit words.  Conversion of this data into meaningful
         %values is the responsibility of the calling function.
@@ -118,9 +117,9 @@ switch upper(vr)
         %representation fields, but the data conversion b/w matlab and java is int32.
         
         %data = uint16(attr.getInts(buf));
-        data = attr.getInts(buf);
+        data = attr.getInts(hex2dec(tag));
     case 'PN'
-        nameObj = org.dcm4che3.data.PersonName(attr.getString(cs, buf));
+        nameObj = org.dcm4che3.data.PersonName(attr.getString(hex2dec(tag)));
 
         %The # in get(#) as defined by dcm4che2, PersonName class.
         data.FamilyName = char(nameObj.get(0));
@@ -130,27 +129,27 @@ switch upper(vr)
         data.NameSuffix = char(nameObj.get(4));
     case 'SL'
         % 
-         data = attr.getInt(buf);
+         data = attr.getInt(hex2dec(tag), 0);
     case 'SQ'
         nElements = attr.countItems;
         data = [];
         for i=0:nElements-1
-            data.(['Item_' num2str(i+1)]) = dcm2ml_Object(attr.getDicomObject(i));
+            data.(['Item_' num2str(i+1)]) = dcm2ml_Object(attr.getDicomObject(i)); %CHANGE THIS TOO IMPORTANT
         end
     case 'SS'
         %Needs implementation
         data = '';
     case 'TM'
         %Time string format: HHMMSS.ss where "ss" is fraction of a second.
-        data = char(attr.getString(cs, buf));
+        data = char(attr.getString(hex2dec(tag)));
     case 'UI'
-        data = char(attr.getString(cs, buf));
+        data = char(attr.getString(hex2dec(tag)));
     case 'UL'
-        data = attr.getInts(buf);
+        data = attr.getInts(hex2dec(tag));
     case 'UN'
         data = attr.getBytes;
     case 'US'
-        data = attr.getInt(buf);
+        data = attr.getInt(hex2dec(tag), 0);
     case 'UT'
         %Needs implementation
         data = '';                 
@@ -168,6 +167,7 @@ else
     %Handle empty data situations -- this needs to be tailored to individual
     %VR values if matching MATLAB's dicominfo function output is desired.
     if isempty(data);
+        disp('ERROR IN GETTAGVAL');
         data = '';
     end
 end

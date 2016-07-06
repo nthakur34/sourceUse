@@ -242,8 +242,8 @@ if (strcmp(dcmobj.getVR(hex2dec(modalityTag)),'CS'))
 end
 %modality = dcm2ml_Element(dcmobj.get(hex2dec(modalityTag)));
 modality = getTagValue(dcmobj, modalityTag);
-
 if ~isfield(seriesS, 'Modality')
+    disp('wOW issue in dcmdir add');
     seriesS.Modality = [];
 end
 
@@ -263,6 +263,9 @@ end
 % end
 
 seriesS.Modality = modality;
+%disp('-------------');
+%disp(seriesS.Modality);
+%disp('.>>>>>>>>>>>>');
 ind = length(seriesS.Data) + 1;
 seriesS.Data(ind).info = dcmobj;
 seriesS.Data(ind).file = filename;

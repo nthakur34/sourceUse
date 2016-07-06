@@ -94,7 +94,6 @@ else
     
 end
 
-
 if isempty(dcmdirS)
     close(hWaitbar);
     msgbox('There is no dicom data!','Application Info','warn');
@@ -116,6 +115,7 @@ elseif strcmpi(selected,'all')
         end
     end
     combinedDcmdirS = newCombinedDcmdirS;
+    disp(combinedDcmdirS.STUDY.SERIES(1));
 %     for i = 2:length(patNameC)
 %         for j = 1:length(dcmdirS.(patNameC{i}).STUDY.SERIES)
 %             combinedDcmdirS.STUDY.SERIES(end+1) = dcmdirS.(patNameC{i}).STUDY.SERIES(j);
