@@ -54,7 +54,7 @@ SSRS = dcmobj.get(hex2dec('30060020'));
 %ROI Contour Sequence
 RCS = dcmobj.get(hex2dec('30060039'));
 
-dcm2ml_Element(dcmobj.get(hex2dec('00200032')));
+getTagValue(dcmobj, '00200032');
 
 %Count em up.
 nStructs = RCS.countItems;
@@ -63,14 +63,14 @@ nStructs = RCS.countItems;
 ssObj = SSRS.getDicomObject(structNum - 1);
 
 %ROI Number
-ROINumber = dcm2ml_Element(ssObj.get(hex2dec('30060022')));
+ROINumber = getTagValue(ssObj, '30060022');
 
 %Find the contour object for this structure.
 for i=1:nStructs
     cObj = RCS.getDicomObject(i - 1);
 
     %Referenced ROI Number
-    RRN = dcm2ml_Element(cObj.get(hex2dec('30060084')));
+    RRN = getTagValue(cObj, '30060084');
 
     if RRN == ROINumber
         %We found the correct contour for this structure.
@@ -95,12 +95,12 @@ switch fieldname
 
     case 'patientName'
         %Patient's Name
-        nameS = dcm2ml_Element(dcmobj.get(hex2dec('00100010')));
+        nameS = getTagValue(dcmobj, '00100010');
         dataS = [nameS.FamilyName '^' nameS.GivenName '^' nameS.MiddleName];
 
     case 'structureName'
         %ROI Name
-        dataS = dcm2ml_Element(ssObj.get(hex2dec('30060026')));
+        dataS = getTagValue(ssObj, '30060026');
 
     case 'numberRepresentation'
         %Artifact of RTOG field names, not representative of CERR data.
@@ -114,13 +114,13 @@ switch fieldname
         RFRS = dcmobj.get(hex2dec('30060010'));
 
         %Frame of Reference UID
-        FORUID = dcm2ml_Element(ssObj.get(hex2dec('30060024')));
+        FORUID = getTagValue(ssObj, '30060024');
 
         %Find the series referenced by these contours.  See bottom of file.
         RSS = getReferencedSeriesSequence(RFRS, FORUID);
 
         %Convert to ML structure format.
-        RSSML = dcm2ml_Object(RSS);
+        RSSML = getTagStruct(RSS);
 
         if ~isempty(RSSML) && ~isempty(RSSML.ContourImageSequence)
             %# slices in this series.
@@ -147,11 +147,11 @@ switch fieldname
 
     case 'writer'
         %Manufacturer
-        dataS = dcm2ml_Element(dcmobj.get(hex2dec('00080070')));
+        dataS = getTagValue(dcmobj, '00080070');
 
     case 'dateWritten'
         %Structure Set Date.
-        dataS = dcm2ml_Element(dcmobj.get(hex2dec('30060008')));
+        dataS = getTagValue(dcmobj, '30060008');
 
     case 'structureColor'
         %Currently not implemented
@@ -179,7 +179,7 @@ switch fieldname
             aContour = cSeq.getDicomObject(i-1);
 
             %Contour Geometric Type
-            geoType = dcm2ml_Element(aContour.get(hex2dec('30060042')));
+            geoType = getTagValue(aContour, '30060042');
 
             switch upper(geoType)
                 case 'POINT'
@@ -195,7 +195,7 @@ switch fieldname
             end
 
             %Number of Contour Points
-            nPoints = dcm2ml_Element(aContour.get(hex2dec('30060046')));
+            nPoints = getTagValue(aContour, '30060046');
             if isempty(nPoints)
                 nPoints = 0;
             end
@@ -206,7 +206,7 @@ switch fieldname
 
             %Contour Data
             try
-                data    = dcm2ml_Element(aContour.get(hex2dec('30060050')));
+                data    = getTagValue(aContour, '30060050');
             catch
                 disp('vacant contour found ...');
                 dataS(i).segments = [];
@@ -252,7 +252,7 @@ switch fieldname
 
                     if (max(a) > contourSliceTol)
                         %ROI Name
-                        name = dcm2ml_Element(ssObj.get(hex2dec('30060026')));
+                        name = getTagValue(ssObj, '30060026');
 
                         warning(['CERR does not support out-of-plane contours. Skipping contour ' num2str(i) ' in structure ' name '.']);
                         continue;
@@ -286,7 +286,7 @@ switch fieldname
     case 'DICOMHeaders'
         %Currently not implemented
         %Read all the dcm data into a MATLAB struct.
-        dataS = dcm2ml_Object(dcmobj);
+        dataS = getTagStruct(dcmobj);
 
         %Remove contoursequence data to avoid storing huge amounts of redundant data.
         try
@@ -309,7 +309,7 @@ switch fieldname
         %SSRS_1 = SSRS.getDicomObject(0);
         %dataS = char(SSRS_1.getString(org.dcm4che2.data.Tag.ReferencedFrameofReferenceUID));
         
-        %dataS = dcm2ml_Element(SSRS.get(hex2dec('00200052')));
+        %dataS = getTagValue(SSRS.get(hex2dec('00200052')));
         %dataS = ['CT.',dataS];
         
         %commented by wy
@@ -317,13 +317,13 @@ switch fieldname
         RFRS = dcmobj.get(hex2dec('30060010'));
         
         %Frame of Reference UID
-        FORUID = dcm2ml_Element(ssObj.get(hex2dec('30060024')));
+        FORUID = getTagValue(ssObj, '30060024');
         
         %Find the series referenced by these contours.  See bottom of file.
         RSS = getReferencedSeriesSequence(RFRS, FORUID);
         
         %Convert to ML structure format.
-        RSSML = dcm2ml_Object(RSS);
+        RSSML = getTagStruct(RSS);
         
         if ~isempty(RSSML)
             %UID of series structures were contoured on.
@@ -357,7 +357,7 @@ for i=1:nRFRS
 
     myRFR = RFRS.getDicomObject(i-1);
 
-    RFRUID = dcm2ml_Element(myRFR.get(hex2dec('00200052')));
+    RFRUID = getTagValue(myRFR, '00200052');
 
     if isequal(RFRUID,FORUID)
 
@@ -381,5 +381,5 @@ end
 
 if ~exist('dcmobj', 'var')
     warning('No explicit association between structures and a scan could be found.');
-    dcmobj = org.dcm4che2.data.BasicDicomObject;
+    dcmobj = org.dcm4che3.data.Attributes;
 end

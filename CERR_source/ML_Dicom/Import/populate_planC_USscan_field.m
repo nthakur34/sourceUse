@@ -56,17 +56,17 @@ switch fieldname
 
             try
                 %Pixel Data
-                sliceV = dcm2ml_Element(imgobj.get(hex2dec('7FE00010')));
+                sliceV = getTagValue(imgobj, '7FE00010');
 
 
                 %Rows
-                nRows  = dcm2ml_Element(imgobj.get(hex2dec('00280010')));
+                nRows  = getTagValue(imgobj, '00280010');
 
                 %Columns
-                nCols  = dcm2ml_Element(imgobj.get(hex2dec('00280011')));
+                nCols  = getTagValue(imgobj, '00280011');
 
                 %Pixel Representation
-                pixRep = dcm2ml_Element(imgobj.get(hex2dec('00280103')));
+                pixRep = getTagValue(imgobj, '00280103');
 
                 switch pixRep
                     case 0
@@ -79,7 +79,7 @@ switch fieldname
 
                 if imgobj.contains(hex2dec('00280008'))
                     % Try to see if tag Number Of Frames is present
-                    numofframe  = dcm2ml_Element(imgobj.get(hex2dec('00280008')));
+                    numofframe  = getTagValue(imgobj, '00280008');
 
                     if numofframe > 1 & imageNum == 1
                         errordlg('This is Multiframe Ultrasound Study !! We do not support this data type.');
@@ -88,7 +88,7 @@ switch fieldname
 
                     if imgobj.contains(hex2dec('00280002'))
                         % Samples Per Pixel (Check to see if it is a RGB image)
-                        samples_Per_Pixel = dcm2ml_Element(imgobj.get(hex2dec('00280002')));
+                        samples_Per_Pixel = getTagValue(imgobj, '00280002');
                     else
                         samples_Per_Pixel = 1
                     end
@@ -100,7 +100,7 @@ switch fieldname
                 slice2D = dicomread(IMAGE.file);
             end
 
-            samples_Per_Pixel = dcm2ml_Element(imgobj.get(hex2dec('00280002')));
+            samples_Per_Pixel = getTagValue(imgobj, '00280002');
             if samples_Per_Pixel == 3
                 try
                     slice2D = rgb2gray(slice2D);
@@ -115,7 +115,7 @@ switch fieldname
             % Technologies to provide Z coordinates
 
             try %wy ImageTranslationVectorRET
-                transV = dcm2ml_Element(imgobj.get(hex2dec('00185212')));
+                transV = getTagValue(imgobj, '00185212');
                 %Convert from DICOM mm to CERR cm, invert Z to match CERR Zdir.
                 zValues(imageNum)  = -transV(3)/10;
             catch
@@ -154,7 +154,7 @@ switch fieldname
             % This is a private tag done by Envisioneering Medical
             % Technologies to provide Z coordinates
             try %wy ImageTranslationVectorRET
-                transV = dcm2ml_Element(imgobj.get(hex2dec('00185212')));
+                transV = getTagValue(imgobj, '00185212');
                 %Convert from DICOM mm to CERR cm, invert Z to match CERR Zdir.
                 zValues(imageNum)  = -transV(3)/10;
             catch
@@ -186,7 +186,7 @@ switch fieldname
         %Implementation is unnecessary.
     case 'scanUID'
         %Series Instance UID
-        dataS = dcm2ml_Element(SERIES.info.get(hex2dec('0020000E')));
+        dataS = getTagValue(SERIES.info, '0020000E');
     otherwise
         %         warning(['DICOM Import has no methods defined for import into the planC{indexS.scan}.' fieldname ' field, leaving empty.']);
 end

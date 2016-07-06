@@ -52,7 +52,7 @@ end
 % %ROI Contour Sequence
 % RCS = dcmobj.get(hex2dec('30060039'));
 % 
-% dcm2ml_Element(dcmobj.get(hex2dec('00200032')));
+% getTagValue(dcmobj.get(hex2dec('00200032')));
 % 
 % %Count em up.
 % nStructs = RCS.countItems;
@@ -61,14 +61,14 @@ end
 % ssObj = SSRS.getDicomObject(structNum - 1);
 % 
 % %ROI Number
-% ROINumber = dcm2ml_Element(ssObj.get(hex2dec('30060022')));
+% ROINumber = getTagValue(ssObj.get(hex2dec('30060022')));
 % 
 % %Find the contour object for this structure.
 % for i=1:nStructs
 %     cObj = RCS.getDicomObject(i - 1);
 % 
 %     %Referenced ROI Number
-%     RRN = dcm2ml_Element(cObj.get(hex2dec('30060084')));
+%     RRN = getTagValue(cObj.get(hex2dec('30060084')));
 % 
 %     if RRN == ROINumber
 %         %We found the correct contour for this structure.
@@ -94,7 +94,7 @@ switch fieldname
             aRegSeq = rSeq.getDicomObject(i-1);
             
             %Frame of Reference UID
-            FORUID = dcm2ml_Element(aRegSeq.get(hex2dec('00200052')));
+            FORUID = getTagValue(aRegSeq, '00200052');
             RIS = aRegSeq.get(hex2dec('00081140'));
             forUID = FORUID;
             
@@ -109,9 +109,9 @@ switch fieldname
             for iMat = 1:numMatrixItems
                 aMatItem = matItemsSeq.getDicomObject(iMat-1);
                 % Frame of reference Transformation Matrix
-                transV = dcm2ml_Element(aMatItem.get(hex2dec('300600C6')));
+                transV = getTagValue(aMatItem, '300600C6');
                 % Frame of reference Transformation Matrix Type
-                dataS(i).transType{iMat} = dcm2ml_Element(aMatItem.get(hex2dec('0070030C')));
+                dataS(i).transType{iMat} = getTagValue(aMatItem, '0070030C');
                 transM = reshape(transV(:),4,4)';
                 transM(1:3,4) = transM(1:3,4)/10;
                 dataS(i).transM{iMat} = transM;                
@@ -138,7 +138,7 @@ switch fieldname
             
             % Get the UID of associated scan
             %Frame of Reference UID
-            FORUID = dcm2ml_Element(aRegSeq.get(hex2dec('00640003')));
+            FORUID = getTagValue(aRegSeq, '00640003');
             RIS = aRegSeq.get(hex2dec('00081140'));
             forUID = FORUID;
 
@@ -148,8 +148,8 @@ switch fieldname
             preRegTransType = '';
             if ~isempty(preDefMatRegSeq)            
                 preRegDefObj = preDefMatRegSeq.getDicomObject(0);
-                preRegTransM = dcm2ml_Element(preRegDefObj.get(hex2dec('300600C6')));
-                preRegTransType = dcm2ml_Element(preRegDefObj.get(hex2dec('0070030C')));
+                preRegTransM = getTagValue(preRegDefObj, '300600C6');
+                preRegTransType = getTagValue(preRegDefObj, '0070030C');
             end
             dataS(i).preRegTransM = reshape(preRegTransM,4,4)';
             dataS(i).preRegTransM(1:3,4) = dataS(i).preRegTransM(1:3,4)/10;
@@ -161,8 +161,8 @@ switch fieldname
             postRegTransType = '';
             if ~isempty(postDefMatRegSeq)            
                 postRegDefObj = postDefMatRegSeq.getDicomObject(0);
-                postRegTransM = dcm2ml_Element(postRegDefObj.get(hex2dec('300600C6')));
-                postRegTransType = dcm2ml_Element(postRegDefObj.get(hex2dec('0070030C')));
+                postRegTransM = getTagValue(postRegDefObj, '300600C6');
+                postRegTransType = getTagValue(postRegDefObj, '0070030C');
             end
             dataS(i).postRegTransM = reshape(postRegTransM,4,4)';
             dataS(i).postRegTransM(1:3,4) = dataS(i).postRegTransM(1:3,4)/10;
@@ -177,11 +177,11 @@ switch fieldname
             vectorGridData = [];
             if ~isempty(defRegSeq)
                 defRegSeqObj = defRegSeq.getDicomObject(0);
-                imgOri = dcm2ml_Element(defRegSeqObj.get(hex2dec('00200037')));
-                imgpos    = dcm2ml_Element(defRegSeqObj.get(hex2dec('00200032')))/10;
-                gridDimensions          = dcm2ml_Element(defRegSeqObj.get(hex2dec('00640007')));
-                pixspac          = dcm2ml_Element(defRegSeqObj.get(hex2dec('00640008')))/10;
-                vectorGridData          = dcm2ml_Element(defRegSeqObj.get(hex2dec('00640009')))/10;
+                imgOri = getTagValue(defRegSeqObj, '00200037');
+                imgpos    = getTagValue(defRegSeqObj, '00200032')/10;
+                gridDimensions          = getTagValue(defRegSeqObj, '00640007');
+                pixspac          = getTagValue(defRegSeqObj, '00640008')/10;
+                vectorGridData          = getTagValue(defRegSeqObj, '00640009')/10;
             end
             dataS(i).imageOrientationPatient = imgOri;
             dataS(i).imagePositionPatient = imgpos;
@@ -254,7 +254,7 @@ switch fieldname
         %SSRS_1 = SSRS.getDicomObject(0);
         %dataS = char(SSRS_1.getString(org.dcm4che2.data.Tag.ReferencedFrameofReferenceUID));
         
-        %dataS = dcm2ml_Element(SSRS.get(hex2dec('00200052')));
+        %dataS = getTagValue(SSRS.get(hex2dec('00200052')));
         %dataS = ['CT.',dataS];
         
         %commented by wy
@@ -262,13 +262,13 @@ switch fieldname
         RFRS = dcmobj.get(hex2dec('00640003'));
         
         %Frame of Reference UID
-        FORUID = dcm2ml_Element(ssObj.get(hex2dec('30060024')));
+        FORUID = getTagValue(ssObj, '30060024');
         
         %Find the series referenced by these contours.  See bottom of file.
         RSS = getReferencedSeriesSequence(RFRS, FORUID);
         
         %Convert to ML structure format.
-        RSSML = dcm2ml_Object(RSS);
+        RSSML = getTagStruct(RSS);
         
         if ~isempty(RSSML)
             %UID of series structures were contoured on.
@@ -303,7 +303,7 @@ for i=1:nRFRS
 
     myRFR = RFRS.getDicomObject(i-1);
 
-    RFRUID = dcm2ml_Element(myRFR.get(hex2dec('00200052')));
+    RFRUID = getTagValue(myRFR, '00200052');
 
     if isequal(RFRUID,FORUID)
 
@@ -327,5 +327,5 @@ end
 
 if ~exist('dcmobj', 'var')
     warning('No explicit association between structures and a scan could be found.');
-    dcmobj = org.dcm4che2.data.BasicDicomObject;
+    dcmobj = org.dcm4che3.data.Attributes;
 end

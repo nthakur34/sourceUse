@@ -394,7 +394,7 @@ switch fieldname
         if dcmobj.contains(hex2dec('30040008'));
             
             %Normalization Point
-            nP  = getTagValue(dcmobj.get(hex2dec('30040008')));
+            nP  = getTagValue(dcmobj, '30040008');
             
             %Convert from DICOM mm to CERR cm.
             dataS = nP(1) / 10;
@@ -405,7 +405,7 @@ switch fieldname
         if dcmobj.contains(hex2dec('30040008'));
             
             %Normalization Point
-            nP  = getTagValue(dcmobj.get(hex2dec('30040008')));
+            nP  = getTagValue(dcmobj, '30040008');
             
             %Convert from DICOM mm to CERR cm.
             dataS = nP(2) / 10;
@@ -416,7 +416,7 @@ switch fieldname
         if dcmobj.contains(hex2dec('30040008'));
             
             %Normalization Point
-            nP  = getTagValue(dcmobj.get(hex2dec('30040008')));
+            nP  = getTagValue(dcmobj, '30040008');
             
             %Convert from DICOM mm to CERR cm.
             dataS = nP(3) / 10;
@@ -429,12 +429,12 @@ switch fieldname
     case 'planIDOfOrigin'
     case 'doseArray'
         %Bits Allocated
-        bA = getTagValue(dcmobj.get(hex2dec('00280100')));
+        bA = getTagValue(dcmobj, '00280100');
         
         mread = 0;
         %wy Pixel Data
         try
-            doseV = uint16(getTagValue(dcmobj.get(hex2dec('7FE00010'))));
+            doseV = uint16(getTagValue(dcmobj, '7FE00010'));
             if isempty(doseV)
                 doseV = dicomread(DOSE.file);
                 mread = 1;
@@ -457,16 +457,16 @@ switch fieldname
         end
         
         %Dose Grid Scaling
-        dGS = getTagValue(dcmobj.get(hex2dec('3004000E')));
+        dGS = getTagValue(dcmobj, '3004000E');
         
         %Columns
-        nCols = getTagValue(dcmobj.get(hex2dec('00280011')));
+        nCols = getTagValue(dcmobj, '00280011');
         
         %Rows
-        nRows = getTagValue(dcmobj.get(hex2dec('00280010')));
+        nRows = getTagValue(dcmobj, '00280010');
         
         %Number of Frames
-        nSlcs = getTagValue(dcmobj.get(hex2dec('00280008')));
+        nSlcs = getTagValue(dcmobj ,'00280008');
         
         %Rescale dose to get real dose values.
         doseV = single(doseV) * dGS;
@@ -485,7 +485,7 @@ switch fieldname
         end
         dataS = dose3;
         
-        imgOri = getTagValue(dcmobj.get(hex2dec('00200037')));
+        imgOri = getTagValue(dcmobj, '00200037');
         if (imgOri(1)==-1)            
             dataS = flipdim(dataS, 2);
         end
@@ -503,8 +503,8 @@ switch fieldname
         
     case 'zValues'
         %Image Position (Patient)
-        iPP = getTagValue(dcmobj.get(hex2dec('00200032')));
-        imgOri = getTagValue(dcmobj.get(hex2dec('00200037')));
+        iPP = getTagValue(dcmobj, '00200032');
+        imgOri = getTagValue(dcmobj, '00200037');
         %APA commented begins
 %         if ~isequal(pPos,'HFP')
 %             if (imgOri(1)==-1) || (imgOri(5)==-1)
@@ -513,7 +513,7 @@ switch fieldname
 %         end
         %APA commented ends
         %Frame Increment Pointer
-        fIP = getTagValue(dcmobj.get(hex2dec('00280009')));
+        fIP = getTagValue(dcmobj, '00280009');
         
         if size(fIP,1) == 2
             fIP = [fIP(1,:) fIP(2,:)]; %added DK to make fIP a size of 1.
@@ -522,7 +522,7 @@ switch fieldname
         %Follow pointer to attribute containing zValues, usually Grid Frame Offset Vector
 
         try
-            gFOV = getTagValue(dcmobj.get(hex2dec(fIP)));
+            gFOV = getTagValue(dcmobj, fIP);
             if ((imgOri(1)==-1) || (imgOri(5)==-1)) && ~isequal(pPos,'HFP')
                 gFOV = - gFOV;
             end            
@@ -555,7 +555,8 @@ switch fieldname
         
     case 'DICOMHeaders'
         %Read all the dcm data into a MATLAB struct.
-        dataS = dcm2ml_Object(dcmobj);
+        %dataS = dcm2ml_Object(dcmobj);
+        dataS = getTagStruct(dcmobj);
         
         %Remove pixelData to avoid storing huge amounts of redundant data.
         if isfield(dataS, 'PixelData')
@@ -568,14 +569,14 @@ switch fieldname
     case 'assocScanUID'
         %wy, use the frame of reference UID to associate dose to scan.
         %dataS = char(dcmobj.getString(org.dcm4che2.data.Tag.FrameofReferenceUID));
-        dataS = getTagValue(dcmobj.get(hex2dec('00080018')));
+        dataS = getTagValue(dcmobj, '00080018');
         
     case 'transM'
         %Implementation is unnecessary.
         
     case 'dvhsequence'
         %Get DVH Sequence.
-        dataS = getTagValue(dcmobj.get(hex2dec('30040050')));
+        dataS = getTagValue(dcmobj, '30040050');
         
     otherwise
         %         warning(['DICOM Import has no methods defined for import into the planC{indexS.dose}.' fieldname ' field, leaving empty.']);
@@ -586,7 +587,7 @@ function [RTPlanLabel RTPlanUID]= getRelatedRTPlanLabel(rtPlans,dcmobj)
 RTPlanLabel = ''; RTPlanUID = '';
 
 try
-    ReferencedRTPlanSequence = getTagValue(dcmobj.get(hex2dec('300C0002')));
+    ReferencedRTPlanSequence = getTagValue(dcmobj, '300C0002');
 
     for i = 1:length(rtPlans)
         if strmatch(rtPlans(i).SOPInstanceUID, ReferencedRTPlanSequence.Item_1.ReferencedSOPInstanceUID)

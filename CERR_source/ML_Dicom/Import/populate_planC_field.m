@@ -204,7 +204,7 @@ switch cellName
                     doseobj  = scanfile_mldcm(RTDOSE(doseNum).file);
                     
                     % Frame of Reference UID
-                    frameOfRefUID = dcm2ml_Element(doseobj.get(hex2dec('00200052')));
+                    frameOfRefUID = getTagValue(doseobj, '00200052');
                                             
                     %check if it is a DVH                    
                     dvhsequence = populate_planC_dose_field('dvhsequence', RTDOSE(doseNum), doseobj, rtPlans);
@@ -520,7 +520,7 @@ switch cellName
                     regobj  = scanfile_mldcm(REG(regNum).file);
                     
                     % Frame of Reference UID
-                    frameOfRefUID = dcm2ml_Element(regobj.get(hex2dec('00200052')));
+                    frameOfRefUID = getTagValue(regobj.get(hex2dec('00200052')));
                     
                     
                     %Populate each field in the dose structure.
