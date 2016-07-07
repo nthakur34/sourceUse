@@ -36,7 +36,7 @@ for i=1:length(tagS)
     tag = tagS(i);
     
     %Get the element's name.
-    name = org.dcm4che3.data.ElementDictionary.keywordOf(tag, []);
+    name = char(org.dcm4che3.data.ElementDictionary.keywordOf(tag, []));
        
     %Convert to a valid ML fieldname.
     name = dcm2ml_Fieldname(name, tag); 

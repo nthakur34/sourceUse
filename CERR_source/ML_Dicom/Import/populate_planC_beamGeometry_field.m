@@ -67,7 +67,7 @@ for i=1:nbeams
             beamGeometryInitS(1,i).fractionGroupID = num2str(length(planC{indexS.dose}))+1;
         end
     end
-    
+    disp(isstruct(beamsInitS));
     beamGeometryInitS(1,i).beamNumber         = getfield(beamsInitS, 'BeamSequence',['Item_', num2str(i)],'BeamNumber');
     beamGeometryInitS(1,i).beamDescription    = getfield(beamsInitS, 'BeamSequence',['Item_', num2str(i)],'BeamName');
     beamGeometryInitS(1,i).beamModality       = getfield(beamsInitS, 'BeamSequence',['Item_', num2str(i)],'RadiationType');

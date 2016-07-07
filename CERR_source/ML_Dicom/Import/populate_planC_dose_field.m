@@ -92,60 +92,72 @@ switch fieldname
         %% Try to handle without using "get" command to transition to dcm4che3
     case 'refBeamNumber'
         
-        rtplanSeq = getTagValue(dcmobj, '300C0002');
+        rtplanSeq = dcmobj.getValue(hex2dec('300C0002'));
         if isempty(rtplanSeq)
             return;
         end
-        %artpSeq = rtplanSeq.getDicomObject(0); %Sequence. change to dcm4che3
-        %maybe it's to get parent
-        artpSeq = dcmobj.getParent();
-        fractionGroupSeq = getTagValue(artpSeq, '300C0020');        
+
+        artpSeq = rtplanSeq.get(0);
+        fractionGroupSeq = artpSeq.getValue(hex2dec('300C0020'));      
         if isempty(fractionGroupSeq)
             return;
         end
-        %% how to get this? idk so ignoring it for now
-        numFractions = fractionGroupSeq.countItems;
+        
+        if ~isempty(fractionGroupSeq)
+            numFractions = fractionGroupSeq.size();
+        else
+            numFractions = 0;
+        end
+
         if numFractions == 0
             return;
         end
         %% 
         %aFractionGroupSeq = fractionGroupSeq.getDicomObject(0);
-        aFractionGroupSeq = artpSeq.getParent();
-        beamSeq = getTagValue(aFractionGroupSeq, '300C0004');
+        aFractionGroupSeq = fractionGroupSeq.get(0);
+        beamSeq = aFractionGroupSeq.getValue(hex2dec('300C0004'));
         if isempty(beamSeq)
             return;
         end
-        %% how to get this? idk so ignoring it for now
-        numBeams = beamSeq.countItems;
+        
+        if ~isempty(beamSeq)
+            numBeams = beamSeq.size();
+        else
+            numBeams = 0;
+        end
+        
         if numBeams > 0
-            aBeamSeq = beamSeq.getDicomObject(0);
+            aBeamSeq = beamSeq.get(0);
             dataS = getTagValue(aBeamSeq, '300C0006');
         end
                     
     case 'refFractionGroupNumber'
-        rtplanSeq = getTagValue(dcmobj, '300C0002');
+        rtplanSeq = dcmobj.getValue(hex2dec('300C0002'));
         if isempty(rtplanSeq)
             return;
         end        
-        artpSeq = rtplanSeq.getDicomObject(0);
-        fractionGroupSeq = artpSeq.get(hex2dec('300C0020'));
+        artpSeq = rtplanSeq.get(0);
+        fractionGroupSeq = artpSeq.getValue(hex2dec('300C0020'));
         if isempty(fractionGroupSeq)
             return;
         end
-        %artpSeq = rtplanSeq.getDicomObject(0); %Sequence. change to dcm4che3
-        %maybe it's to get parent
-        artpSeq = dcmobj.getParent();
-        fractionGroupSeq = getTagValue(artpSeq, '300C0020');        
+        artpSeq = rtplanSeq.get(0);
+        fractionGroupSeq = artpSeq.getValue(hex2dec('300C0020'));        
         if isempty(fractionGroupSeq)
             return;
         end
-        %% how to get this? idk so ignoring it for now
-        numFractions = fractionGroupSeq.countItems;
+        
+         if ~isempty(fractionGroupSeq)
+            numFractions = fractionGroupSeq.size();
+        else
+            numFractions = 0;
+        end
+        
         if numFractions == 0
             return;
         end
         
-        aFractionGroupSeq = artpSeq.getParent();
+        aFractionGroupSeq = artpSeq.get(0);
         dataS = getTagValue(aFractionGroupSeq, '300C0022');
         
     case 'numberMultiFrameImages'

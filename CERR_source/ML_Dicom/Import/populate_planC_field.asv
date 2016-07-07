@@ -149,11 +149,12 @@ switch cellName
                     %el = strobj.getStrings(hex2dec('30060039'));
                     el = strobj.getValue(hex2dec('30060039'));
                     %%%UPDATED dcm4che3
-                    if ~isempty(el)
-                        nStructures = el.size();
+                    if (el ~= [])
+                        nElements = el.size();
                     else
-                         nStructures = 0;
-                    end
+                     nElements = 0;
+        end
+                    nStructures = el.size();
 
                     % ROI = strobj.getInt(org.dcm4che2.data.Tag.ROIContourSequence);
 
@@ -323,11 +324,7 @@ switch cellName
                                     %ROI Contour Sequence.
                                     el = strobj.getValue(hex2dec('30060039'));
                                     % ROI = strobj.getInt(org.dcm4che2.data.Tag.ROIContourSequence);                                    
-                                    if ~isempty(el)
-                                        nStructures = el.size();
-                                    else
-                                        nStructures = 0;
-                                    end                                 
+                                    nStructures = el.size();                                    
                                     for js = 1:nStructures
                                         %get Structure name
                                         structureNameC{end+1} = populate_planC_structures_field('structureName', RTSTRUCT, js, strobj);
@@ -424,6 +421,7 @@ switch cellName
     case 'beamGeometry'
         
         dataS = initializeCERR('beamGeometry');
+        
         for i = 1:length(rtPlans)
             beamGeometryS = populate_planC_beamGeometry_field(rtPlans(i), dataS);
             
@@ -483,11 +481,7 @@ switch cellName
 
                     % ROI = strobj.getInt(org.dcm4che2.data.Tag.ROIContourSequence);
                     
-                    if ~isempty(el)
-                        nGsps = el.size();
-                    else
-                         nGsps = 0;
-                    end
+                    nGsps = el.size();
                     curGspsNum = 1;
                     for j = 1:nGsps
                         

@@ -85,13 +85,10 @@ indPT = strfind(imgModality,'PT');
 indPET = strfind(imgModality,'PET');
 
 if ~isempty(indCT) && isempty([indPT indPET])
-    disp('DETERMINED1');
     imgModality = 'CT';
 elseif ~isempty(indPT) && isempty([indCT indPET])
-    disp('DETERMINED2');
     imgModality = 'PT';
 elseif ~isempty(indPET) && isempty([indCT indPT])
-    disp('DETERMINED3');
     imgModality = 'PT';
 end
 

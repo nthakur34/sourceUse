@@ -238,7 +238,7 @@ function seriesS = searchAndAddSeriesMember(filename, dcmobj, seriesS)
 %found adds it.
 
 modalityTag = '00080060';
-if (strcmp(dcmobj.getVR(hex2dec(modalityTag)),'CS'))
+if (strcmp(org.dcm4che3.data.ElementDictionary.vrOf(hex2dec(modalityTag), []),'CS'))
 end
 %modality = dcm2ml_Element(dcmobj.get(hex2dec(modalityTag)));
 modality = getTagValue(dcmobj, modalityTag);

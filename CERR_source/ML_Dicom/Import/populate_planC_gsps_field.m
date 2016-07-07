@@ -42,36 +42,44 @@ if ~exist('dcmobj', 'var')
 end
 
 % Graphical Annotation Sequence
-GSPSseq = dcmobj.get(hex2dec('00700001'));
+GSPSseq = dcmobj.getValue(hex2dec('00700001'));
 
 %Count em up.
-nGsps = GSPSseq.countItems;
+if ~isempty(GSPSseq)
+    nGsps = GSPSseq.size();
+else
+    nGsps = 0;
+end
 
 %Structure Set item for this structure.
-annotObj = GSPSseq.getDicomObject(gspsNum - 1);
+annotObj = GSPSseq.get(gspsNum - 1);
 
 switch fieldname
 
     case 'SOPInstanceUID'
         %Referenced Image Sequence
-        refImageSeq = annotObj.get(hex2dec('00081140'));
-        refImageObj = refImageSeq.getDicomObject(0); % Assuming only one image reference.
+        refImageSeq = annotObj.getValue(hex2dec('00081140'));
+        refImageObj = refImageSeq.get(0); % Assuming only one image reference.
         dataS = getTagValue(refImageObj, '00081155');
         
         
     case 'graphicAnnotationS'
         %Graphic Object Sequence
-        graphicObjSeq = annotObj.get(hex2dec('00700009'));
+        graphicObjSeq = annotObj.getValue(hex2dec('00700009'));
 
         if isempty(graphicObjSeq)
             return;
         end
-
-        numGraphicAnnot = graphicObjSeq.countItems;
+        
+        if ~isempty(graphicObjSeq)
+            numGraphicAnnot = graphicObjSeq.size();
+        else
+            numGraphicAnnot = 0;
+        end
         
         graphicAnnotationS(1:numGraphicAnnot) = struct();
         for i = 1:numGraphicAnnot
-            aGraphicAnnot = graphicObjSeq.getDicomObject(i-1);
+            aGraphicAnnot = graphicObjSeq.get(i-1);
             graphicAnnotationS(i).graphicAnnotationUnits   = getTagValue(aGraphicAnnot, '00700005');
             graphicAnnotationS(i).graphicAnnotationDims    = getTagValue(aGraphicAnnot, '00700020');
             graphicAnnotationS(i).graphicAnnotationNumPts  = getTagValue(aGraphicAnnot, '00700021');
@@ -85,13 +93,17 @@ switch fieldname
 
     case 'textAnnotationS'
         %Text Object Sequence
-        textObjSeq = annotObj.get(hex2dec('00700008'));
+        textObjSeq = annotObj.getValue(hex2dec('00700008'));
 
         if isempty(textObjSeq)
             return;
         end
 
-        numTextAnnot = textObjSeq.countItems;
+        if ~isempty(textObjSeq)
+            numTextAnnot = textObjSeq.size();
+        else
+            numTextAnnot = 0;
+        end
         
         textAnnotationS(1:numTextAnnot) = struct();
         

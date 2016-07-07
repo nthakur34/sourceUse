@@ -64,7 +64,9 @@ end
 vr = char(attr.vr.toString);
 %}
 %modalityTag = '00080060';
-vr = char (attr.getVR(hex2dec(tag)));
+%METHOD DOESN'T ACCOUNT FOR VR NOT IN ATTRIBUTE
+%vr = char (attr.getVR(hex2dec(tag)));
+vr = char(org.dcm4che3.data.ElementDictionary.vrOf(hex2dec(tag), []));
 buf = 1;
 cs = [];
 
@@ -79,6 +81,7 @@ switch upper(vr)
         data = dec2hex(attr.getInts(hex2dec(tag)));
     case {'CS', 'LO', 'SH', 'ST'}
         data = attr.getStrings(hex2dec(tag));
+        %data = org.dcm4che3.data.ElementDictionary.keywordOf(hex2dec(tag), []);
         %If more than one string, put in cell array.
         if numel(data) > 1
             data = cell(data);
@@ -120,21 +123,33 @@ switch upper(vr)
         data = attr.getInts(hex2dec(tag));
     case 'PN'
         nameObj = org.dcm4che3.data.PersonName(attr.getString(hex2dec(tag)));
-
+        %DCM4CHE3 now uses enum 'Component' instead of an array
+        
+        compFamilyName = javaMethod('valueOf','org.dcm4che3.data.PersonName$Component','FamilyName');
+        compGivenName = javaMethod('valueOf','org.dcm4che3.data.PersonName$Component','GivenName');
+        compMiddleName = javaMethod('valueOf','org.dcm4che3.data.PersonName$Component','MiddleName');
+        compNamePrefix = javaMethod('valueOf','org.dcm4che3.data.PersonName$Component','NamePrefix');
+        compNameSuffix = javaMethod('valueOf','org.dcm4che3.data.PersonName$Component','NameSuffix');
+        
         %The # in get(#) as defined by dcm4che2, PersonName class.
-        data.FamilyName = char(nameObj.get(0));
-        data.GivenName  = char(nameObj.get(1));
-        data.MiddleName = char(nameObj.get(2));
-        data.NamePrefix = char(nameObj.get(3));
-        data.NameSuffix = char(nameObj.get(4));
+        data.FamilyName = char(nameObj.get(compFamilyName));
+        data.GivenName  = char(nameObj.get(compGivenName));
+        data.MiddleName = char(nameObj.get(compMiddleName));
+        data.NamePrefix = char(nameObj.get(compNamePrefix));
+        data.NameSuffix = char(nameObj.get(compNameSuffix));
     case 'SL'
         % 
          data = attr.getInt(hex2dec(tag), 0);
     case 'SQ'
-        nElements = attr.countItems;
+        el = attr.getValue(hex2dec(tag));
+        if ~isempty(el)
+            nElements = el.size();
+        else
+            nElements = 0;
+        end
         data = [];
         for i=0:nElements-1
-            data.(['Item_' num2str(i+1)]) = dcm2ml_Object(attr.getDicomObject(i)); %CHANGE THIS TOO IMPORTANT
+            data.(['Item_' num2str(i+1)]) = getTagStruct(el.get(i)); %CHANGE THIS TOO IMPORTANT
         end
     case 'SS'
         %Needs implementation
@@ -167,7 +182,6 @@ else
     %Handle empty data situations -- this needs to be tailored to individual
     %VR values if matching MATLAB's dicominfo function output is desired.
     if isempty(data);
-        disp('ERROR IN GETTAGVAL');
         data = '';
     end
 end

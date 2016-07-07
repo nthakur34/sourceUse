@@ -49,25 +49,29 @@ if ~exist('dcmobj', 'var')
 end
 
 %Structure Set ROI Sequence
-SSRS = dcmobj.get(hex2dec('30060020'));
+SSRS = dcmobj.getValue(hex2dec('30060020'));
 
 %ROI Contour Sequence
-RCS = dcmobj.get(hex2dec('30060039'));
+RCS = dcmobj.getValue(hex2dec('30060039'));
 
 getTagValue(dcmobj, '00200032');
 
 %Count em up.
-nStructs = RCS.countItems;
 
+if ~isempty(RCS)
+    nStructs = RCS.size();
+else
+    nStructs = 0;
+end
 %Structure Set item for this structure.
-ssObj = SSRS.getDicomObject(structNum - 1);
-
+ssObj = SSRS.get(structNum - 1);
+%ssObj = org.dcm4che3.data.Attributes(SSRS)
 %ROI Number
 ROINumber = getTagValue(ssObj, '30060022');
 
 %Find the contour object for this structure.
 for i=1:nStructs
-    cObj = RCS.getDicomObject(i - 1);
+    cObj = RCS.get(i - 1);
 
     %Referenced ROI Number
     RRN = getTagValue(cObj, '30060084');
@@ -111,7 +115,7 @@ switch fieldname
 
     case 'numberOfScans' %aka # of CT slices
         %Referenced Frame of Reference Sequence
-        RFRS = dcmobj.get(hex2dec('30060010'));
+        RFRS = dcmobj.getValue(hex2dec('30060010'));
 
         %Frame of Reference UID
         FORUID = getTagValue(ssObj, '30060024');
@@ -164,19 +168,23 @@ switch fieldname
 
     case 'contour'
         %Contour Sequence
-        cSeq = cObj.get(hex2dec('30060040'));
+        cSeq = cObj.getValue(hex2dec('30060040'));
 
         if isempty(cSeq)
             return;
         end
 
-        nContours = cSeq.countItems;
+        if ~isempty(cSeq)
+            nContours = cSeq.size();
+        else
+            nContours = 0;
+        end
         
         optS = CERROptions;
         contourSliceTol = optS.contourToSliceTolerance;
 
         for i = 1:nContours
-            aContour = cSeq.getDicomObject(i-1);
+            aContour = cSeq.get(i-1);
 
             %Contour Geometric Type
             geoType = getTagValue(aContour, '30060042');
@@ -314,7 +322,7 @@ switch fieldname
         
         %commented by wy
         %Referenced Frame of Reference Sequence
-        RFRS = dcmobj.get(hex2dec('30060010'));
+        RFRS = dcmobj.getValue(hex2dec('30060010'));
         
         %Frame of Reference UID
         FORUID = getTagValue(ssObj, '30060024');
@@ -350,30 +358,33 @@ function dcmobj = getReferencedSeriesSequence(Referenced_Frame_Of_Reference_Sequ
 RFRS = Referenced_Frame_Of_Reference_Sequence;
 FORUID = Frame_of_Reference_UID;
 
-nRFRS = RFRS.countItems;
-
+if ~isempty(RFRS)
+    nRFRS = RFRS.size();
+else
+    nRFRS = 0;
+end
 %Search the RFR sequence for the UID matching the FORUID.
 for i=1:nRFRS
 
-    myRFR = RFRS.getDicomObject(i-1);
+    myRFR = RFRS.get(i-1);
 
     RFRUID = getTagValue(myRFR, '00200052');
 
     if isequal(RFRUID,FORUID)
 
         %RT Referenced Study Sequence
-        RTRSS = myRFR.get(hex2dec('30060012'));
+        RTRSS = myRFR.getValue(hex2dec('30060012'));
 
         if isempty(RTRSS)
             break;
         end
 
-        RTRSS_1 = RTRSS.getDicomObject(0);
+        RTRSS_1 = RTRSS.get(0);
 
         %RT Referenced Series Sequence
-        RTRSS = RTRSS_1.get(hex2dec('30060014'));
+        RTRSS = RTRSS_1.getValue(hex2dec('30060014'));
 
-        dcmobj = RTRSS.getDicomObject(0);
+        dcmobj = RTRSS.get(0);
 
     end
 
