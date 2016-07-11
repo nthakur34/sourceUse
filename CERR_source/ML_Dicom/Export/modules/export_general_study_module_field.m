@@ -40,21 +40,51 @@ template    = args.template;
 switch tag
     %Class 1 Tags -- Required, must have data.
     case 2097165    %0020,000D Study Instance UID
-        data = structS(1).Study_Instance_UID;
-        el = template.get(tag);   
-        el = ml2dcm_Element(el, data);
+        data = structS(1).Study_Instance_UID;   
+        el = ml2dcm_CHANGENAME(template, data, tag);
         
     %Class 2 Tags -- Must be present, can be blank.
     case 524320     %0008,0020 Study Date
-        el = template.get(tag);           
+        %el = template.get(tag);  
+        %{
+        el = template.getSequence(tag);
+        if ~isempty(el)
+            el = [];
+        end
+        %}
+        el = template;
     case 524336     %0008,0030 Study Time
-        el = template.get(tag);           
+        %{
+        el = template.getSequence(tag);
+        if ~isempty(el)
+            el = [];
+        end
+        %}
+        el = template;    
     case 524432     %0008,0090 Referring Physician's Name
-        el = template.get(tag);           
+        %{
+        el = template.getSequence(tag);
+        if ~isempty(el)
+            el = [];
+        end
+        %}
+        el = template;      
     case 2097168    %0020,0010 Study ID
-        el = template.get(tag);           
+        %{
+        el = template.getSequence(tag);
+        if ~isempty(el)
+            el = [];
+        end
+        %}
+        el = template;         
     case 524368     %0008,0050 Accession Number
-        el = template.get(tag);           
+        %{
+        el = template.getSequence(tag);
+        if ~isempty(el)
+            el = [];
+        end
+        %}
+        el = template;      
         
     %Class 3 Tags -- presence is optional, currently undefined.        
     case 524438     %0008,0096 Referring Physician Identification Sequence

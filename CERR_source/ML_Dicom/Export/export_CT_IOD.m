@@ -99,7 +99,8 @@ for scanNum = 1:length(planC{indexS.scan})
     for i=1:length(scanS.scanInfo)
 
         %Create a dcmobj to hold a single slice.
-        dcmobj = org.dcm4che2.data.BasicDicomObject;
+        %CHANGE to dcm4che 3attribute
+        dcmobj = org.dcm4che3.data.Attributes;
 
         %Get info for the slice we are handling.
         scanInfoS = scanS.scanInfo(i);
@@ -119,17 +120,17 @@ for scanNum = 1:length(planC{indexS.scan})
         SOPobj = export_module('SOP_common', 'scanInfo', scanInfoS);
 
         %Combine all modules into a single dcmobj.
-        patientobj.copyTo(dcmobj);
-        studyobj.copyTo(dcmobj);
-        seriesobj.copyTo(dcmobj);
-        frameobj.copyTo(dcmobj);
-        equipobj.copyTo(dcmobj);
-        imgobj.copyTo(dcmobj);
-        imgplaneobj.copyTo(dcmobj);
-        imgpixelobj.copyTo(dcmobj);
-        ctimageobj.copyTo(dcmobj);
-        SOPobj.copyTo(dcmobj);
-        
+        dcmobj.addAll(patientobj);
+        dcmobj.addAll(studyobj);
+        dcmobj.addAll(seriesobj);
+        dcmobj.addAll(frameobj);
+        dcmobj.addAll(equipobj);
+        dcmobj.addAll(imgobj);
+        dcmobj.addAll(imgplaneobj);
+        dcmobj.addAll(imgpixelobj);
+        dcmobj.addAll(ctimageobj);
+        dcmobj.addAll(SOPobj);
+
         clear imgobj imgplaneobj imgpixelobj ctimageobj SOPobj
 
         fileNum  = num2str(filenumber + nWritten);

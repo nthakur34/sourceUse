@@ -37,15 +37,18 @@ function dcmobj = export_sequence(function_handle, el, data)
 % You should have received a copy of the GNU General Public License
 % along with CERR.  If not, see <http://www.gnu.org/licenses/>.
 
-dcmobj = org.dcm4che2.data.BasicDicomObject;
+dcmobj = org.dcm4che3.data.Attributes;
 
-obj = el.getDicomObject;
-it = obj.datasetIterator;
+obj = el.get(0);
 
-while it.hasNext
+tagS = obj.tags();
+
+for i=1:length(tagS)    
+%while it.hasNext
     
-    child = it.next;   
-    child_args.tag      = child.tag;
+    tag = tagS(i);
+    %child = it.next;   
+    child_args.tag      = tag;
     child_args.data     = data;
     child_args.template = obj;
 %     child_args.planC    = planC;
@@ -53,6 +56,6 @@ while it.hasNext
     el = feval(function_handle, child_args);
     
     if ~isempty(el)
-        dcmobj.add(el);
+        dcmobj.addAll(el);
     end
 end

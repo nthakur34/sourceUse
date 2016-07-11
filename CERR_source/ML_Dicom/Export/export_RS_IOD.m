@@ -55,7 +55,7 @@ for scanNum = 1:length(planC{indexS.scan})
     end
     
     %Create empty dcmobj.
-    dcmobj = org.dcm4che2.data.BasicDicomObject;    
+    dcmobj = org.dcm4che3.data.Attributes;    
     
     structureS = planC{indexS.structures}(matchStructsV);
         
@@ -65,35 +65,36 @@ for scanNum = 1:length(planC{indexS.scan})
         structureS(1).DICOMHeaders.PatientID = scanS.scanInfo(1).DICOMHeaders.PatientID;
     end
     ssobj = export_module('patient', 'structures', structureS);
-    ssobj.copyTo(dcmobj);
+    %ssobj.copyTo(dcmobj);
+    dcmobj.addAll(ssobj);
     clear ssobj;
     
     ssobj = export_module('general_study', structureS);
-    ssobj.copyTo(dcmobj);
+    dcmobj.addAll(ssobj);
     clear ssobj;
     
     ssobj = export_module('general_equipment', 'structures', structureS);
-    ssobj.copyTo(dcmobj);
+    dcmobj.addAll(ssobj);
     clear ssobj;
     
     ssobj = export_module('rt_series', 'structures', structureS);
-    ssobj.copyTo(dcmobj);
+    dcmobj.addAll(ssobj);
     clear ssobj;
     
     ssobj = export_module('structure_set', structureS, scanS);
-    ssobj.copyTo(dcmobj);
+    dcmobj.addAll(ssobj);
     clear ssobj;
     
     ssobj = export_module('roi_contour', structureS);
-    ssobj.copyTo(dcmobj);
+    dcmobj.addAll(ssobj);
     clear ssobj;
     
     ssobj = export_module('rt_roi_observations', structureS);
-    ssobj.copyTo(dcmobj);
+    dcmobj.addAll(ssobj);
     clear ssobj;
     
     ssobj = export_module('SOP_common', 'structures', structureS);
-    ssobj.copyTo(dcmobj);
+    dcmobj.addAll(ssobj);
     clear ssobj;
     
     fileNum  = num2str(filenumber + nWritten);

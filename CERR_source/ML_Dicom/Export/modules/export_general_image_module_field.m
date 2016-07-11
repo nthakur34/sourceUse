@@ -66,8 +66,7 @@ switch tag
                     data = 1;
                 end
         end
-        el = template.get(tag);
-        el = ml2dcm_Element(el, data);
+        el = ml2dcm_CHANGENAME(template, data, tag);
 
         %Class 3 Tags -- presence is optional, currently undefined.
     case  524296    %0008,0008 Image Type

@@ -73,8 +73,7 @@ switch tag
             case 'structures'
                 data = 'RTSTRUCT';
         end
-        el = template.get(tag);
-        el = ml2dcm_Element(el, data);        
+        el = ml2dcm_CHANGENAME(template, data, tag);      
         
     case 2097166    %0020,000E Series Instance UID  
         switch type
@@ -84,13 +83,18 @@ switch tag
                 %All structures have the same Series_Instance_UID, simply use first.                
                 UID = structS(1).Series_Instance_UID;
         end
-        el = template.get(tag);
-        el = ml2dcm_Element(el, UID);        
+        el = ml2dcm_CHANGENAME(template, UID, tag);        
         
     %Class 2 Tags -- Must be present, can be NULL.        
 
     case 2097169    %0020,0011 Series Number
-        el = template.get(tag);        
+        %{
+        el = template.getSequence(tag);
+        if ~isempty(el)
+            el = [];
+        end
+        %}
+        el = template;    
         
     %Class 3 Tags -- presence is optional, currently undefined.        
 

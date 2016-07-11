@@ -118,32 +118,21 @@ switch tag
         %el = template.get(tag);
         %kEEP OR remove?
         %if remove
-        %{
-        disp('=====')
-        disp(template.getSequence(tag));
-        disp('{{{][][][]');
         el = template.getSequence(tag);
-        disp(el.toString());
         if ~isempty(el)
-
             el = [];
         end
-        %}
-        el = template;
 
     case 1048640 %0010,0040 Patient's Sex
         %el = template.get(tag);
         %kEEP OR remove?
         %if remove
-        %{
+        if 
         el = template.getSequence(tag);
-        disp(el.toString());
         if ~isempty(el)
-
             el = [];
         end
-        %}
-        el = template;
+        
         %Class 3 Tags -- presence is optional, currently undefined.
     case 1048609 %0010,0021 Issuer of Patient ID
     case 528672  %0008,1120 Referenced Patient Sequence

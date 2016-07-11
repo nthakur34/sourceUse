@@ -61,17 +61,22 @@ switch tag
         elseif strcmpi(upper(data),'MRI')
             data = 'MR';
         end
-        el = template.get(tag);
-        el = ml2dcm_Element(el, data);
+        el = ml2dcm_CHANGENAME(template, data, tag);
         
     case 2097166    %0020,000E Series Instance UID
         data = scanS.Series_Instance_UID;
-        el = template.get(tag);   
-        el = ml2dcm_Element(el, data);
+        el = ml2dcm_CHANGENAME(template, data, tag);
 
     %Class 2 Tags -- Must be present, can be blank.
     case 2097169    %0020,0011 Series Number
-        el = template.get(tag);
+        %el = template.get(tag);
+        %{
+        el = template.getSequence(tag);
+        if ~isempty(el)
+            el = [];
+        end
+        %}
+        el = template;
      
     %Class 3 Tags -- presence is optional, currently undefined.        
     case  524321    %0008,0021 Series Date
@@ -125,13 +130,11 @@ switch tag
                 warning('scanInfo.headInOut or scanInfo.positionInScan contain invalid values.  Assuming HFS.');
                 data = 'HFS';   %Head First Supine
             end
-            el = template.get(tag);
-            el = ml2dcm_Element(el, data);
+            el = ml2dcm_CHANGENAME(template, data, tag);
         catch
             warning('scanInfo does not contain Patient Position information. Defaul to HFS');
             data = 'HFS';
-            el = template.get(tag);
-            el = ml2dcm_Element(el,data);            
+            el = ml2dcm_CHANGENAME(template, data, tag);           
         end
                    
     otherwise

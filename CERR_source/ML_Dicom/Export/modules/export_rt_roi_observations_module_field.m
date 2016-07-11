@@ -53,11 +53,11 @@ template    = args.template;
 
 switch tag
     case 805699712  %3006,0080 RT ROI Observations Sequence
-        templateEl = template.get(tag);
+        templateEl = template.getValue(tag);
         fHandle = @export_rt_roi_observations_sequence;
         
-        tmp = org.dcm4che2.data.BasicDicomObject;
-        el = tmp.putNull(tag, []);
+        tmp = org.dcm4che3.data.Atributes;
+        el = tmp.setNull(tag, []);
 
         nStructures = length(structuresS);
         

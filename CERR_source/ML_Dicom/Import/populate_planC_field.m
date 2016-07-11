@@ -7,6 +7,7 @@ function dataS = populate_planC_field(cellName, dcmdir_patient)
 %
 %JRA 06/15/06
 %YWU Modified 03/01/08
+%Conversion to dcm4che3 07/08/16
 %
 %Usage:
 %   dataS = populate_planC_field(cellName, dcmdir);
@@ -39,7 +40,6 @@ structS = initializeCERR(cellName);
 names   = fields(structS);
 
 dataS = [];
-
 switch cellName
     case 'header'
         rtPlans = []; % Clear persistent object
@@ -420,10 +420,11 @@ switch cellName
 
         end
         rtPlans= dataS;
-        
+
     case 'beamGeometry'
         
         dataS = initializeCERR('beamGeometry');
+
         for i = 1:length(rtPlans)
             beamGeometryS = populate_planC_beamGeometry_field(rtPlans(i), dataS);
             

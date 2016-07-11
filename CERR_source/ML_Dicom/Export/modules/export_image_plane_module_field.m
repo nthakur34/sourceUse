@@ -75,13 +75,11 @@ switch tag
         
         %Convert from CERR cm to DICOM mm.        
         data        = [pixWidth pixHeight] * 10;
-        el = template.get(tag);
-        el = ml2dcm_Element(el, data);
+        el = ml2dcm_CHANGENAME(template, data, tag);
         
     case 2097207    %0020,0037 Image Orientation (Patient)
         data = [1 0 0 0 1 0];
-        el = template.get(tag);
-        el = ml2dcm_Element(el, data);
+        el = ml2dcm_CHANGENAME(template, data, tag);
         
     case 2097202    %0020,0032 Image Position (Patient) (mm)
         switch type
@@ -101,8 +99,7 @@ switch tag
         
         %Convert from CERR cm to DICOM mm.
         data = [xV yV zV] * 10;
-        el = template.get(tag);
-        el = ml2dcm_Element(el, data);
+        el = ml2dcm_CHANGENAME(template, data, tag);
         
     %Class 2 Tags -- Must be present, can be blank.    
     
@@ -125,8 +122,7 @@ switch tag
         
         %Convert from CERR cm to DICOM mm.        
         data = data * 10;       
-        el = template.get(tag);
-        el = ml2dcm_Element(el, data);        
+        el = ml2dcm_CHANGENAME(template, data, tag);      
         
     %Class 3 Tags -- presence is optional, currently undefined.
     

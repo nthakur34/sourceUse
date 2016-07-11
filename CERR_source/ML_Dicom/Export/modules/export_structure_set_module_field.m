@@ -55,19 +55,16 @@ switch tag
     %Class 1 Tags -- Required, must have data.
     case 805699586  %3006,0002 Structure Set Label.
         data = 'CERR Exported Structures';
-        el = template.get(tag);
-        el = ml2dcm_Element(el, data);
+        el = ml2dcm_CHANGENAME(template, data, tag);
               
     %Class 2 Tags -- Must be present, can be NULL.
     case 805699592  %3006,0008 Structure Set Date
         data = datestr(now, 29);
-        el = template.get(tag);
-        el = ml2dcm_Element(el, data);
+        el = ml2dcm_CHANGENAME(template, data, tag);
         
     case 805699593  %3006,0009 Structure Set Time
         data = datestr(now, 13);
-        el = template.get(tag);
-        el = ml2dcm_Element(el, data);        
+        el = ml2dcm_CHANGENAME(template, data, tag);  
                      
     %Class 3 Tags -- presence is optional, currently undefined.
     case 805699588  %3006,0004 Structure Set Name
@@ -80,11 +77,11 @@ switch tag
         %Currently unsupported.        
         
     case 805699600  %3006,0010 Referenced Frame of Reference Sequence               
-        templateEl = template.get(tag);
+        templateEl = template.getValue(tag);
         fHandle = @export_referenced_frame_of_reference_sequence;
 
-        tmp = org.dcm4che2.data.BasicDicomObject;
-        el = tmp.putNull(tag, []);
+        tmp = org.dcm4che3.data.Attributes;
+        el = tmp.setNull(tag, []);
 
         %Get unique frame of reference UIDs used by structures.
         FORs    = unique({structuresS.Frame_Of_Reference_UID});
@@ -99,8 +96,8 @@ switch tag
         templateEl  = template.get(tag);
         fHandle = @export_structure_set_ROI_sequence;
 
-        tmp = org.dcm4che2.data.BasicDicomObject;
-        el = tmp.putNull(tag, []);
+        tmp = org.dcm4che3.data.Attributes;
+        el = tmp.setNull(tag, []);
 
         nStructures = length(structuresS);
         

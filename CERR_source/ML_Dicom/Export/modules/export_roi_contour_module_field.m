@@ -55,11 +55,11 @@ switch tag
     %Class 1 Tags -- Required, must have data.    
     
     case 805699641  %3006,0039 ROI Contour Sequence               
-        templateEl  = template.get(tag);
+        templateEl  = template.getValue(tag);
         fHandle = @export_ROI_contour_sequence;
 
-        tmp = org.dcm4che2.data.BasicDicomObject;
-        el = tmp.putNull(tag, []);
+        tmp = org.dcm4che3.data.Attributes;
+        el = tmp.setNull(tag, []);
 
         nStructures = length(structS);
         

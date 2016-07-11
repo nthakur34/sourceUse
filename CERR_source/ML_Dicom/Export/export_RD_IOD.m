@@ -47,7 +47,7 @@ for i = 1:length(planC{indexS.dose});
     doseS = planC{indexS.dose}(i);    
     
     %Create empty dcmobj.
-    dcmobj = org.dcm4che2.data.BasicDicomObject;    
+    dcmobj = org.dcm4che3.data.Attributes;    
 
     %Export each module required for the RD IOD, copying the results into the
     %common dcmobj container and return.
@@ -55,44 +55,45 @@ for i = 1:length(planC{indexS.dose});
         doseS(1).DICOMHeaders.PatientID = scanS.scanInfo(1).DICOMHeaders.PatientID;
     end
     ssobj = export_module('patient', 'dose', doseS);
-    ssobj.copyTo(dcmobj);
+    dcmobj.addAll(ssobj);
     clear ssobj;
     
     ssobj = export_module('general_study', doseS);
-    ssobj.copyTo(dcmobj);
+    %ssobj.copyTo(dcmobj);
+    dcmobj.addAll(ssobj);
     clear ssobj;
 
     ssobj = export_module('general_equipment', 'dose', doseS);
-    ssobj.copyTo(dcmobj);
+    dcmobj.addAll(ssobj);
     clear ssobj;
 
     ssobj = export_module('rt_series', 'dose', doseS);
-    ssobj.copyTo(dcmobj);
+    dcmobj.addAll(ssobj);
     clear ssobj;
 
     ssobj = export_module('frame_of_reference', doseS);
-    ssobj.copyTo(dcmobj);
+    dcmobj.addAll(ssobj);
     clear ssobj;
 
     ssobj = export_module('general_image', 'dose', doseS);
-    ssobj.copyTo(dcmobj);
+    dcmobj.addAll(ssobj);
     clear ssobj;
 
     ssobj = export_module('image_plane', 'dose', doseS);
-    ssobj.copyTo(dcmobj);
+    dcmobj.addAll(ssobj);
     clear ssobj;
 
     ssobj = export_module('image_pixel', 'dose', doseS);
-    ssobj.copyTo(dcmobj);
+    dcmobj.addAll(ssobj);
     clear ssobj;
     
     ssobj = export_module('multi_frame', 'dose', doseS);
-    ssobj.copyTo(dcmobj);
+    dcmobj.addAll(ssobj);
     clear ssobj;    
 
     doseUnits = getDoseUnitsStr(i, planC);
     ssobj = export_module('rt_dose', doseS, doseUnits);
-    ssobj.copyTo(dcmobj);
+    dcmobj.addAll(ssobj);
     clear ssobj;
 
     %Determine if DVHs must be exported.  If any DVHs reference the dose
@@ -107,12 +108,12 @@ for i = 1:length(planC{indexS.dose});
     %Call the rt_dvh export with only the relevant DVHs.
     if length(dInd) > 0        
         ssobj = export_module('rt_dvh', i, DVHS(dInd));
-        ssobj.copyTo(dcmobj);
+        dcmobj.addAll(ssobj);
         clear ssobj;
     end
         
     ssobj = export_module('SOP_common', 'dose', doseS);
-    ssobj.copyTo(dcmobj);
+    dcmobj.addAll(ssobj);
     clear ssobj;
 
     fileNum  = num2str(filenumber + nWritten);

@@ -69,8 +69,7 @@ switch tag
             case 'dose'
                 data = 1;               %1 image plane in dose.
         end
-        el = template.get(tag);
-        el = ml2dcm_Element(el, data);        
+        el = ml2dcm_CHANGENAME(template, data, tag);        
      
     case 2621444    %0028,0004 Photometric Interpretation
         data = 'MONOCHROME2';   %CT/MR have 0 black, maxVal white.  Same with dose.
@@ -82,8 +81,7 @@ switch tag
             case 'dose'
                 data = doseS.sizeOfDimension2;
         end
-        el = template.get(tag);
-        el = ml2dcm_Element(el, data);        
+        el = ml2dcm_CHANGENAME(template, data, tag);     
 
     case 2621457    %0028,0011 Columns
         switch type
@@ -92,8 +90,7 @@ switch tag
             case 'dose'
                 data = doseS.sizeOfDimension1;
         end
-        el = template.get(tag);
-        el = ml2dcm_Element(el, data);        
+        el = ml2dcm_CHANGENAME(template, data, tag);       
         
     case 2621696    %0028,0100 Bits Allocated
         switch type
@@ -102,8 +99,7 @@ switch tag
             case 'dose'
                 data = 32;
         end
-        el = template.get(tag);
-        el = ml2dcm_Element(el, data);        
+        el = ml2dcm_CHANGENAME(template, data, tag);        
         
     case 2621697    %0028,0101 Bits Stored                                                                
         switch type
@@ -119,8 +115,7 @@ switch tag
             case 'dose'
                 data = 32;
         end                        
-        el = template.get(tag);
-        el = ml2dcm_Element(el, data);        
+        el = ml2dcm_CHANGENAME(template, data, tag);    
 
     case 2621698    %0028,0102 High Bit
         switch type
@@ -137,8 +132,7 @@ switch tag
             case 'dose'
                 data = 32 - 1;
         end        
-        el = template.get(tag);
-        el = ml2dcm_Element(el, data);        
+        el = ml2dcm_CHANGENAME(template, data, tag);     
    
     case 2621699    %0028,0103 Pixel Representation
         switch type
@@ -158,8 +152,7 @@ switch tag
                 end
 %wy                
         end
-        el = template.get(tag);
-        el = ml2dcm_Element(el, data);        
+        el = ml2dcm_CHANGENAME(template, data, tag);      
 
     %Class 2 Tags -- Must be present, can be blank.       
 
@@ -210,8 +203,7 @@ switch tag
                 data = bitstream_conversion_to('uint16', data);
         end
         
-        el = template.get(tag);
-        el = ml2dcm_Element(el, data);
+        el = ml2dcm_CHANGENAME(template, data, tag);
         
     case 2621446    %0028,0006 Planar Configuration
     case 2621492    %0028,0034 Pixel Aspect Ratio

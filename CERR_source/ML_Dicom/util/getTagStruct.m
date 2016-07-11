@@ -44,7 +44,7 @@ for i=1:length(tagS)
     if strcmpi(name, 'PixelData'), continue; end;
     
     if isempty(name), continue; end;
-    
+
     if org.dcm4che3.util.TagUtils.isPrivateCreator(tag)
         %Handle the special case of a private creator data element... many
         %may exist so they need to be renamed based on the tag code.
@@ -57,19 +57,19 @@ for i=1:length(tagS)
         tagString  = char(org.dcm4che3.util.TagUtils.toString(tag));        
         name = ['Private_' tagString(2:5) '_' tagString(7:10)];
     end
-    
-    if isempty(name) && strcmpi(char(attr.getVR(hex2dec(tag))), 'UN');
+
+    if isempty(name) && strcmpi(char(attr.getVR(tag)), 'UN');
         %Handle the case of a tag that is not in the current DICOM 
         %dictionary.
         tagString  = char(org.dcm4che3.util.TagUtils.toString(tag));
         name = ['Unknown_' tagString(2:5) '_' tagString(7:10)];
     end
-               
+         
     %Extract the element's value by converting it to a Matlab struct.
     try   
         %data = dcm2ml_Element(el);
         %Replace with this?
-        data = getTagValue(attr, tag);
+        data = getTagValue(attr, dec2hex(tag));
         mlObj.(name) = data;
     catch
         continue;

@@ -54,26 +54,22 @@ for i=1:length(tags)
            exit(1);
        end
        dcmobj.setNull(tags(i), vr);
-       %dcmobj.addDicomObject(child_obj);
-       %child_obj.add(i, dcmobj);
-       %child_obj.setParent(dcmobj, child_obj.getParentSequencePrivateCreator(), child_obj.getParentSequenceTag);
-       
        
     %Handle the case of a tag with children, a sequence.
     %CHANGED to ELEMENT DICTIONARY
     elseif  strcmpi(toString(vr), 'SQ')
        child_obj = org.dcm4che3.data.Attributes;
-       % el = dcmobj.setNull(tags(i), vr); NOT WORKING
+       % convert to setNull from putNull
        dcmobj.setNull(tags(i), vr);
-       el = dcmobj;
+       el = dcmobj.getSequence(tags(i));
        
        kids = tagS(i).children;
        child_obj = createEmptyFields(child_obj, kids); 
-       %FIX by removing
+       %FConvert to dcm4che3 by removing
         % el.addDicomObject(child_obj);
-       % probably use this or maybe Sequence class
+       % After setting null, get the sequence and add to it.
    
-       el.addAll(child_obj);
+       el.add(child_obj);
        
     %Handle the case of a tag that appears to have children but is not 
     %recognized as a sequence by the data dictionary.    
