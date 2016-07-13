@@ -57,13 +57,22 @@ switch tag
         fHandle = @export_rt_roi_observations_sequence;
         
         tmp = org.dcm4che3.data.Atributes;
-        el = tmp.setNull(tag, []);
-
+        vr = org.dcm4che3.data.ElementDictionary.vrOf(tag, tmp.getPrivateCreator(tag));
+        tmp.setNull(tag, vr);
+        el = tmp;
         nStructures = length(structuresS);
         
         for i=1:nStructures
             dcmobj = export_sequence(fHandle, templateEl, {structuresS(i), i});
-            el.addDicomObject(i-1, dcmobj);
+            disp('************');
+            el.getSequence(tag).add(i-1, dcmobj);
+            disp('&&&&&&&&');
+            disp(el);
+            dcm = org.dcm4che3.data.Atributes;
+            dcm.addAll(el);
+            disp(dcm);
+            disp('************');
+            %el.addDicomObject(i-1, dcmobj);
         end                    
         
     otherwise

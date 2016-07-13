@@ -129,7 +129,11 @@ switch tag
             el = [];
         end
         %}
-        el = template;
+        disp(template);
+        el = template.newSequence(tag, 1);
+        disp(el.size());
+       % el = org.dcm4che3.data.Attributes;
+       % el.setString(tag, template.getVR(tag), template.getString(tag));
 
     case 1048640 %0010,0040 Patient's Sex
         %el = template.get(tag);
@@ -143,7 +147,26 @@ switch tag
             el = [];
         end
         %}
-        el = template;
+        disp(template);
+        el = template.getSequence(tag);
+       % el.add(attr);
+        %el = template.getValue(tag);
+        disp(el.size());
+       % el = org.dcm4che3.data.Attributes;
+        %el.setString(tag, template.getVR(tag), template.getString(tag));
+        %{
+        tmp = el;
+        %tmp = tmp.getSequence(tag);
+        
+         disp('-----------------------------');
+        disp(tmp);
+         disp('-----------------------------');
+        dip = org.dcm4che3.data.Attributes;
+        tmp.getSequence(tag).add(0, dip);
+        disp(tmp);
+         disp('-----------------------------');
+        %}
+        %el = template;
         %Class 3 Tags -- presence is optional, currently undefined.
     case 1048609 %0010,0021 Issuer of Patient ID
     case 528672  %0008,1120 Referenced Patient Sequence

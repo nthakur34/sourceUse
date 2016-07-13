@@ -52,7 +52,13 @@ switch tag
             el = [];
         end
         %}
-        el = template;
+        %el = template;
+        
+        el = org.dcm4che3.data.Attributes;
+        vr = org.dcm4che3.data.ElementDictionary.vrOf(tag, []);
+         %template.getVR(tag)
+        el.setString(tag, vr, template.getString(tag));
+        
     otherwise
         warning(['No methods exist to populate DICOM frame of reference module field ' dec2hex(tag,8) '.']);
 end

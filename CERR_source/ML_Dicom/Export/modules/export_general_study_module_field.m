@@ -52,7 +52,11 @@ switch tag
             el = [];
         end
         %}
-        el = template;
+        %el = template;
+        
+        el = org.dcm4che3.data.Attributes;
+        el.setString(tag, template.getVR(tag), template.getString(tag));
+        
     case 524336     %0008,0030 Study Time
         %{
         el = template.getSequence(tag);
@@ -60,7 +64,11 @@ switch tag
             el = [];
         end
         %}
-        el = template;    
+        %el = template;   
+        
+        el = org.dcm4che3.data.Attributes;
+        el.setString(tag, template.getVR(tag), template.getString(tag));
+        
     case 524432     %0008,0090 Referring Physician's Name
         %{
         el = template.getSequence(tag);
@@ -68,7 +76,11 @@ switch tag
             el = [];
         end
         %}
-        el = template;      
+        %el = template;   
+        
+        el = org.dcm4che3.data.Attributes;
+        el.setString(tag, template.getVR(tag), template.getString(tag));
+        
     case 2097168    %0020,0010 Study ID
         %{
         el = template.getSequence(tag);
@@ -76,7 +88,10 @@ switch tag
             el = [];
         end
         %}
-        el = template;         
+        %el = template;   
+        el = org.dcm4che3.data.Attributes;
+        el.setString(tag, template.getVR(tag), template.getString(tag));
+        
     case 524368     %0008,0050 Accession Number
         %{
         el = template.getSequence(tag);
@@ -84,7 +99,10 @@ switch tag
             el = [];
         end
         %}
-        el = template;      
+        %el = template;    
+        el = org.dcm4che3.data.Attributes;
+        el.setString(tag, template.getVR(tag), template.getString(tag));
+        
         
     %Class 3 Tags -- presence is optional, currently undefined.        
     case 524438     %0008,0096 Referring Physician Identification Sequence

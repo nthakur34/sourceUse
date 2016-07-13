@@ -146,11 +146,13 @@ switch tag
         fHandle = @export_referenced_rt_plan_sequence;
 
         tmp = org.dcm4che3.data.Attributes;
-        el = tmp.setNull(tag, []);
+        vr = org.dcm4che3.data.ElementDictionary.vrOf(tag, tmp.getPrivateCreator(tag));
+        el = tmp.setNull(tag, vr);
        
         dcmobj = export_sequence(fHandle, templateEl, {doseS});
-        el.addDicomObject(0, dcmobj);
-        
+        %Convert to dcm4che3
+        el.getSequence(tag).add(0, dcmobj);
+        %el.addDicomObject(0, dcmobj);
     case 805568524  %3004,000C  Grid Frame Offset Vector
         %Vector of monotonically varying values starting at zero,
         %indicating offset of Z coordinate from image position (patient)

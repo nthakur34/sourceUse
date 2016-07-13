@@ -42,22 +42,26 @@ template            = args.template;
 switch tag
     case   2097166  %0020,000E  Series Instance UID
         data = SeriesInstanceUID;
-        el = template.get(tag);
-        el = ml2dcm_Element(el, data);        
+       % el = template.get(tag);
+        el = ml2dcm_CHANGENAME(template, data, tag);        
         
     case 805699606  %3006,0016  Contour Image Sequence
-        templateEl = template.get(tag);
+       % templateEl = template.get(tag);
+        templateEl = template.getValue(tag);
         fHandle = @export_contour_image_sequence;
 
-        tmp = org.dcm4che2.data.BasicDicomObject;
-        el = tmp.putNull(tag, []);
+        tmp = org.dcm4che3.data.Attributes;
+        vr = org.dcm4che3.data.ElementDictionary.vrOf(tag, []);
+        tmp.setNull(tag, vr);
+        el = tmp.newSequence(tag, 1);
+        el.add(tmp);
 
         %Iterate over each slice.
         for i=1:length(scanS.scanInfo)
             scanInfo = scanS.scanInfo(i);
             
             dcmobj = export_sequence(fHandle, templateEl, {scanInfo});
-            el.addDicomObject(i-1, dcmobj);
+            el.add(i-1, dcmobj);
         end           
         
         

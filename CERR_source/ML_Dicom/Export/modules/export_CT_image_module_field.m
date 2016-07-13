@@ -122,7 +122,11 @@ switch tag
             el = [];
         end
         %}
-        el = template;
+        %el = template;
+        
+        el = org.dcm4che3.data.Attributes;
+        el.setString(tag, template.getVR(tag), template.getString(tag));
+        
     case 2097170    %0020,0012 Acqusition Number
         %el = template.get(tag);
         %{
@@ -131,7 +135,11 @@ switch tag
             el = [];
         end
         %}
-        el = template;
+        %el = template;
+        
+        el = org.dcm4che3.data.Attributes;
+        el.setString(tag, template.getVR(tag), template.getString(tag));
+        
     %Class 3 Tags -- presence is optional, currently undefined.
     case 1572898    %0018,0022 Scan Options
     case 1573008    %0018,0090 Data Collection Diameter

@@ -78,10 +78,16 @@ switch tag
         
     case 805699600  %3006,0010 Referenced Frame of Reference Sequence               
         templateEl = template.getValue(tag);
+
         fHandle = @export_referenced_frame_of_reference_sequence;
 
         tmp = org.dcm4che3.data.Attributes;
-        el = tmp.setNull(tag, []);
+        vr = org.dcm4che3.data.ElementDictionary.vrOf(tag, []);
+        tmp.setNull(tag, vr);
+        el = tmp.newSequence(tag, 1);
+        el.add(tmp);
+
+
 
         %Get unique frame of reference UIDs used by structures.
         FORs    = unique({structuresS.Frame_Of_Reference_UID});
@@ -89,21 +95,24 @@ switch tag
         
         for i=1:nFORs
             dcmobj = export_sequence(fHandle, templateEl, {FORs(i), scansS});
-            el.addDicomObject(i-1, dcmobj);
+            el.add(i-1, dcmobj);
         end   
                 
     case 805699616  %3006,0020 Structure Set ROI Sequence  
-        templateEl  = template.get(tag);
+        templateEl = template.getValue(tag);
         fHandle = @export_structure_set_ROI_sequence;
 
         tmp = org.dcm4che3.data.Attributes;
-        el = tmp.setNull(tag, []);
+        vr = org.dcm4che3.data.ElementDictionary.vrOf(tag, []);
+        tmp.setNull(tag, vr);
+        el = tmp.newSequence(tag, 1);
+        el.add(tmp);
 
         nStructures = length(structuresS);
         
         for i=1:nStructures
             dcmobj = export_sequence(fHandle, templateEl, {structuresS(i), i});
-            el.addDicomObject(i-1, dcmobj);
+            el.add(i-1, dcmobj);
         end       
         
     %Class 1C Tags -- presence is required under special circumstances

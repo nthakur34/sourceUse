@@ -41,13 +41,13 @@ template            = args.template;
 switch tag
     case 528720     %0008,1150  Referenced SOP Class UID
         data = scanInfo.SOP_Class_UID;     
-        el = template.get(tag);
-        el = ml2dcm_Element(el, data);
+        %el = template.get(tag);
+        el = ml2dcm_CHANGENAME(template, data, tag);
         
     case 528725     %0008,1155  Referenced SOP Instance UID
         data = scanInfo.SOP_Instance_UID;        
-        el = template.get(tag);
-        el = ml2dcm_Element(el, data);
+        %el = template.get(tag);
+        el = ml2dcm_CHANGENAME(template, data, tag);
         
     case 528736     %0008,1160  Referenced Frame Number
         %Currently not implemented.

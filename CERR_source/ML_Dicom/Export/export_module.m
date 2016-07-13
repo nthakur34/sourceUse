@@ -133,14 +133,23 @@ for i=1:length(allTags)
    %Get the SimpleDicomElement Java object with data properly filled.
    %In this line "export_function" is a function HANDLE not an actual
    %function.  Need to check backwards compatibility with previous ML vers.
-   %disp(export_function);
-   %string = @export_general_equipment_module_field;
+   %%string = @export_general_equipment_module_field;
    el = export_function(args);
+   disp(export_function);
+   disp(args.tag);
    %%
    %prolly not this way. Got to use sequence and get most likely
-   if ~isempty(el)
+   if (~isempty(el))
+       disp(el.size());
+       if(el.size()-1 > 0)
+           el.remove(el.size()-1);
        %dcmobj.add(el);
-       dcmobj.addAll(el);
+
+      % disp('TEST in EXPORT MODULE');
+      % disp(el.get(1));
+      % disp(attr.getString(1048592));
+       dcmobj.addAll(el.getParent());
+       end
        %{
        if (isequal(export_function, string))
            disp(dcmobj);

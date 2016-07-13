@@ -38,13 +38,13 @@ function dcmobj = export_sequence(function_handle, el, data)
 % along with CERR.  If not, see <http://www.gnu.org/licenses/>.
 
 dcmobj = org.dcm4che3.data.Attributes;
-
+%obj = org.dcm4che3.data.Attributes;
 obj = el.get(0);
-
 tagS = obj.tags();
-
+count = 0;
 for i=1:length(tagS)    
 %while it.hasNext
+    count = count + 1
     
     tag = tagS(i);
     %child = it.next;   
@@ -52,10 +52,27 @@ for i=1:length(tagS)
     child_args.data     = data;
     child_args.template = obj;
 %     child_args.planC    = planC;
-    
+    disp(child_args);
+    disp(function_handle);
     el = feval(function_handle, child_args);
     
     if ~isempty(el)
+        disp(el);
+        %
+        if (el.size() > 1)
+           % for i=0:el.size()-2
+               % disp(i);
+               %disp(el.get(i));
+
+          %  end
+          el.remove(el.size()-1);
+          dcmobj.addAll(el.getParent());
+        else
         dcmobj.addAll(el);
+        end
+        disp('HERE  ---- >>>>>>>>>>>>>>>');
+        disp(dcmobj);
+       % for i=1:el.size()
+
     end
 end

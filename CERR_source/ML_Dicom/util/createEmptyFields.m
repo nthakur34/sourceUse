@@ -62,7 +62,7 @@ for i=1:length(tags)
        % convert to setNull from putNull
        dcmobj.setNull(tags(i), vr);
        el = dcmobj.getSequence(tags(i));
-       
+       %el = dcmobj;
        kids = tagS(i).children;
        child_obj = createEmptyFields(child_obj, kids); 
        %FConvert to dcm4che3 by removing
@@ -70,7 +70,13 @@ for i=1:length(tags)
        % After setting null, get the sequence and add to it.
    
        el.add(child_obj);
-       
+      % disp('***************');
+       %disp(el);
+       %{
+       el.getSequence(tags(i)).add(child_obj);
+       disp('***************');
+       disp(el);
+       %}
     %Handle the case of a tag that appears to have children but is not 
     %recognized as a sequence by the data dictionary.    
     else    

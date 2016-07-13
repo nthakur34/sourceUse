@@ -43,19 +43,42 @@ switch tag
     %Class 1 Tags -- Required, must have data.
     case 2097234    %0020,0052  Frame of Reference UID
         data = UID;
-        el = template.get(tag);
-        el = ml2dcm_Element(el, data);
+        %el = template.get(tag);
+        %el = org.dcm4che3.data.Attributes;
+        %el.setString(tag, template.getVR(tag), template.getString(tag));
+        
+        el = ml2dcm_CHANGENAME(template, data, tag); %replaced el with template
 
     %Class 3 Tags -- presence is optional, currently undefined.        
     case 805699776  %3006,00C0  Frame of Reference Relationship Sequence       
         %Currently unsupported.
         
     case 805699602  %3006,0012  RT Referenced Study Sequence
-        templateEl = template.get(tag);
+        %ERROR HERE
+        %temp = org.dcm4che3.data.Attributes;
+        %vr = org.dcm4che3.data.ElementDictionary.vrOf(tag, []);
+         %template.getVR(tag)
+        %templateEl.setString(tag, vr, '');
+        
+        
+        %{
+        temp.setNull(tag, vr);
+        templateEl = template.newSequence(tag, 10); %ADD VARIABLE FOR 10
+        templateEl.add(temp);
+        templateEl.get(0);
+        %}
+        
+        
+        templateEl = template.getValue(tag);
+        %templateEl = template.get(tag);
+
         fHandle = @export_rt_referenced_study_sequence;
 
-        tmp = org.dcm4che2.data.BasicDicomObject;
-        el = tmp.putNull(tag, []);
+        tmp = org.dcm4che3.data.Attributes;
+        vr = org.dcm4che3.data.ElementDictionary.vrOf(tag, []);
+        tmp.setNull(tag, vr);
+        el = tmp.newSequence(tag, 1);
+        el.add(tmp);
 
         %Study Component Management SOP
         StudySOPClassUID = '1.2.840.10008.3.1.2.3.2'; 
@@ -67,7 +90,8 @@ switch tag
         for i=1:nUniqueStudies
             scansInStudy = scansS(j == i);
             dcmobj = export_sequence(fHandle, templateEl, {StudySOPClassUID, uniqueStudies(i), scansInStudy});
-            el.addDicomObject(i-1, dcmobj);
+            %el.addDicomObject(i-1, dcmobj);
+            el.add(i-1, dcmobj);
         end           
         
         

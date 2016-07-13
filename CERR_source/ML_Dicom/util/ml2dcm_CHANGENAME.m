@@ -113,6 +113,7 @@ switch upper(vrString)
          nameObj.set(compNameSuffix, data.NameSuffix);         
          
          attr.setString(tag, vr, nameObj.toString);
+         disp(attr);
     case 'SH'
         %SH requires that all strings are <= 16 characters.
         switch class(data)
@@ -184,8 +185,14 @@ else
     end
 %}
     %%test just doing this:
-    el = attr;
+    %el = attr;
 
+el = attr.newSequence(tag, 1);
+el.add(attr);
+disp(el.size());
+   % el = org.dcm4che3.data.Attributes;
+    %el.setString(tag, attr.getVR(tag), attr.getString(tag));
+        
 end
 
 clear attr;

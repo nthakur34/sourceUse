@@ -43,26 +43,44 @@ template    = args.template;
 switch tag
     case    528720  %0008,1150  Referenced SOP Class UID
         data = classUID;
-        el = template.get(tag);
-        el = ml2dcm_Element(el, data);
+        %el = template.get(tag);
+        %el = org.dcm4che3.data.Attributes;
+        %el.setString(tag, template.getVR(tag), template.getString(tag));
+        el = ml2dcm_CHANGENAME(template, data, tag); %replace el with temp
         
     case    528725  %0008,1155  Referenced SOP Instance UID
         data = instanceUID;
-        el = template.get(tag);
-        el = ml2dcm_Element(el, data);
+        %el = template.get(tag);
+       % el = org.dcm4che3.data.Attributes;
+        %el.setString(tag, template.getVR(tag), template.getString(tag));
+        el = ml2dcm_CHANGENAME(template, data, tag);
         
     case 805699604  %3006,0014  RT Referenced Series Sequence
-        templateEl = template.get(tag);
+        %{
+         temp = org.dcm4che3.data.Attributes;
+        vr = org.dcm4che3.data.ElementDictionary.vrOf(tag, []);
+         %template.getVR(tag)
+        %templateEl.setString(tag, vr, '');
+        temp.setNull(tag, vr);
+        templateEl = template.newSequence(tag, 10); %ADD VARIABLE FOR 10
+        templateEl.add(temp);
+        templateEl.get(0);
+        %}
+        templateEl = template.getValue(tag);
         fHandle = @export_rt_referenced_series_sequence;
 
-        tmp = org.dcm4che2.data.BasicDicomObject;
-        el = tmp.putNull(tag, []);
+        tmp = org.dcm4che3.data.Attributes;
+        vr = org.dcm4che3.data.ElementDictionary.vrOf(tag, []);
+        tmp.setNull(tag, vr);
+        el = tmp.newSequence(tag, 1);
+        el.add(tmp);
 
         %Iterate over each series.
         for i=1:length(scansS)
             SeriesInstanceUID = scansS(i).Series_Instance_UID;
             dcmobj = export_sequence(fHandle, templateEl, {SeriesInstanceUID, scansS(i)});
-            el.addDicomObject(i-1, dcmobj);
+            %el.addDicomObject(i-1, dcmobj);
+            el.add(i-1, dcmobj);
         end           
         
         

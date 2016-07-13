@@ -76,7 +76,10 @@ switch tag
             el = [];
         end
         %}
-        el = template;
+        %el = template;
+        
+        el = org.dcm4che3.data.Attributes;
+        el.setString(tag, template.getVR(tag), template.getString(tag));
      
     %Class 3 Tags -- presence is optional, currently undefined.        
     case  524321    %0008,0021 Series Date
